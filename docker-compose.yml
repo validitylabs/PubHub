@@ -64,6 +64,11 @@ services:
       APP_API_ENDPOINT: https://localhost:3000
     volumes:
       - ./:/srv
+      - /srv/node_modules
+      - /srv/applications/api/node_modules
+      - /srv/applications/ui/node_modules
+      - /srv/packages/tslint-config/node_modules
+      - /srv/packages/utils/node_modules
     ports:
       - "3001:3001"
     depends_on:
