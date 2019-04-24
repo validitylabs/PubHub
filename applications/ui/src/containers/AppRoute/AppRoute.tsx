@@ -5,7 +5,7 @@ import {withRouter, Route, Redirect, RouteComponentProps} from 'react-router';
 import {LocationDescriptor} from 'history';
 import {Shell} from '../Shell';
 import {RootState} from '../../store';
-import {IAuthState} from '../../store/auth/auth.types';
+// import {IAuthState} from '../../store/auth/auth.types';
 
 export enum AccessRestriction {
     private,
@@ -13,7 +13,7 @@ export enum AccessRestriction {
 }
 
 interface IAppRouteComponentStateProps {
-    auth: IAuthState;
+    // auth: IAuthState;
 }
 
 interface IAppRouteComponentProps {
@@ -51,7 +51,7 @@ class AppRouteComponent extends Component<IAppRouteComponentProps & IAppRouteCom
     };
 
     render() {
-        const {redirectTo, component, accessRestriction, accessRestrictionRedirect, disableHeaderAndDrawer, disableNavigation, auth, ...rest} = this.props;
+        const {redirectTo, component, disableHeaderAndDrawer, disableNavigation, ...rest} = this.props;
 
         // tslint:disable-next-line no-shadowed-variable
         const ComponentToRender = component;
@@ -60,20 +60,6 @@ class AppRouteComponent extends Component<IAppRouteComponentProps & IAppRouteCom
             <Route
                 {...rest}
                 render={(props) => {
-                    if (accessRestriction === AccessRestriction.private && !auth.isAuthenticated) {
-                        if (accessRestrictionRedirect) {
-                            return <Redirect to={accessRestrictionRedirect} />;
-                        }
-                        return null;
-                    }
-
-                    if (accessRestriction === AccessRestriction.public && auth.isAuthenticated) {
-                        if (accessRestrictionRedirect) {
-                            return <Redirect to={accessRestrictionRedirect} />;
-                        }
-                        return null;
-                    }
-
                     if (ComponentToRender) {
                         return (
                             <Shell enableHeaderAndDrawer={!disableHeaderAndDrawer} disableNavigation={disableNavigation}>
@@ -93,8 +79,8 @@ class AppRouteComponent extends Component<IAppRouteComponentProps & IAppRouteCom
     }
 }
 
-const mapStateToProps = ({auth}: RootState) => ({
-    auth
+const mapStateToProps = ({}: RootState) => ({
+    // auth
 });
 
 export const AppRoute = withRouter(connect(mapStateToProps)(AppRouteComponent));

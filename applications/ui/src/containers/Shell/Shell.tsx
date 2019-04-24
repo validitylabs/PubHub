@@ -2,8 +2,8 @@ import React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {RootState} from '../../store';
-import {IAuthState} from '../../store/auth/auth.types';
-import {logout as logoutAction} from '../../store/auth/auth.actions';
+// import {IAuthState} from '../../store/auth/auth.types';
+// import {logout as logoutAction} from '../../store/auth/auth.actions';
 import classNames from 'classnames';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import {withStyles} from '@material-ui/core/styles';
@@ -131,15 +131,16 @@ const styles = (theme: Theme) => ({
     }
 });
 
-interface IAuthCallbackStateProps {
-    auth: IAuthState;
-}
+// interface IAuthCallbackStateProps {
+//     auth: IAuthState;
+// }
 
-interface IAuthCallbackDispatchProps {
-    logout(): void;
-}
+// interface IAuthCallbackDispatchProps {
+//     logout(): void;
+// }
 
-export interface IShellComponentProps extends IAuthCallbackStateProps, IAuthCallbackDispatchProps {
+// export interface IShellComponentProps extends IAuthCallbackStateProps, IAuthCallbackDispatchProps {
+export interface IShellComponentProps {
     classes: {
         logo: string;
         logoLink: string;
@@ -205,10 +206,9 @@ class ShellComponent extends React.Component<IShellComponentProps> {
     };
 
     handleLogoutClick = () => {
-        const {logout} = this.props;
-
-        logout();
-        this.handleMenuClose();
+        // const {logout} = this.props;
+        // logout();
+        // this.handleMenuClose();
     };
 
     renderUserMenu() {
@@ -270,9 +270,10 @@ class ShellComponent extends React.Component<IShellComponentProps> {
         const {enableHeaderAndDrawer, disableNavigation, children} = this.props;
 
         if (enableHeaderAndDrawer) {
-            const {classes, theme, auth} = this.props;
+            // const {classes, theme, auth} = this.props;
+            const {classes, theme} = this.props;
             const {open, anchorEl} = this.state;
-            const isMenuOpen = Boolean(anchorEl);
+            const _isMenuOpen = Boolean(anchorEl);
 
             return (
                 <div className={classes.root}>
@@ -317,7 +318,7 @@ class ShellComponent extends React.Component<IShellComponentProps> {
                                         <NotificationsIcon />
                                     </Badge>
                                 </IconButton>
-                                {auth.isAuthenticated ? (
+                                {/* {auth.isAuthenticated ? (
                                     <IconButton
                                         aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                                         aria-haspopup="true"
@@ -326,7 +327,7 @@ class ShellComponent extends React.Component<IShellComponentProps> {
                                     >
                                         <AccountCircle />
                                     </IconButton>
-                                ) : null}
+                                ) : null} */}
 
                                 {this.renderUserMenu()}
                             </div>
@@ -377,12 +378,12 @@ class ShellComponent extends React.Component<IShellComponentProps> {
 
 export const StyledShellComponent = withStyles(styles, {withTheme: true})(ShellComponent);
 
-const mapStateToProps = ({auth}: RootState) => ({
-    auth
+const mapStateToProps = ({}: RootState) => ({
+    // auth
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    logout: () => dispatch(logoutAction())
+const mapDispatchToProps = (_dispatch: Dispatch) => ({
+    // logout: () => dispatch(logoutAction())
 });
 
 const Shell = connect(

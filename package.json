@@ -24,9 +24,7 @@
       "**/yargs",
       "**/yargs/**",
       "**/web3",
-      "**/web3/**",
-      "**/bcrypt",
-      "**/bcrypt/**"
+      "**/web3/**"
     ]
   },
   "engines": {

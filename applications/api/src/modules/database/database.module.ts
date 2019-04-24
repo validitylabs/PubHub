@@ -5,8 +5,8 @@ import {ConfigurationModule} from '../configuration/configuration.module';
 import {ConfigurationService} from '../configuration/configuration.service';
 
 // Entities
-import {entities as userChangePasswordTicketsModuleEntities} from '../user-change-password-tickets';
-import {entities as usersModuleEntities} from '../users';
+// import {entities as userChangePasswordTicketsModuleEntities} from '../user-change-password-tickets';
+// import {entities as usersModuleEntities} from '../users';
 
 @Module({
     imports: [
@@ -24,7 +24,7 @@ import {entities as usersModuleEntities} from '../users';
                 synchronize: Boolean(configurationService.get('DB_SYNCHRONIZE') && configurationService.get('DB_SYNCHRONIZE').toUpperCase() === 'TRUE'),
                 keepConnectionAlive: true,
                 logging: Boolean(configurationService.get('DB_LOGGING') && configurationService.get('DB_LOGGING').toUpperCase() === 'TRUE'),
-                entities: [...userChangePasswordTicketsModuleEntities, ...usersModuleEntities]
+                entities: []
             }),
             inject: [ConfigurationService]
         })
