@@ -1,0 +1,14 @@
+{
+  "name": "@vl/tslint-config",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "private": true,
+  "peerDependencies": {
+    "tslint": ">=5.11.0"
+  },
+  "dependencies": {
+    "tslint-config-prettier": "^1.17.0",
+    "tslint-xo": "^0.10.0"
+  }
+}

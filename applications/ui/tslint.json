@@ -1,0 +1,22 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["@vl/tslint-config", "tslint-react", "tslint-plugin-prettier"],
+  "rules": {
+    "prettier": true,
+    "indent": [true, "spaces", 4],
+    "comment-format": false,
+    "no-unnecessary-class": false,
+    "file-name-casing": [
+      true,
+      {
+        ".tsx": "pascal-case",
+        ".ts": "kebab-case"
+      }
+    ],
+    "jsx-boolean-value": ["never"],
+    "jsx-no-multiline-js": false,
+    "jsx-no-lambda": false,
+    "prefer-const-enum": false,
+    "react-this-binding-issue": false
+  }
+}

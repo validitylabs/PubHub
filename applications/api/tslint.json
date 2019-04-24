@@ -1,0 +1,10 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["@vl/tslint-config", "tslint-plugin-prettier"],
+  "rules": {
+    "prettier": true,
+    "indent": [true, "spaces", 4],
+    "no-unnecessary-class": false,
+    "comment-format": false
+  }
+}

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cd ./applications/api; APP_MODE='cli' npx ts-node ./src/cli.ts "$@"

@@ -1,0 +1,39 @@
+{
+  "name": "whitelabel-webapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@https://gitlab.com/vl/tokenization/validity-labs/web-app.git",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "test": "CI=true npx wsrun --exclude-missing test"
+  },
+  "workspaces": {
+    "packages": [
+      "applications/*",
+      "packages/*"
+    ],
+    "nohoist": [
+      "@vl/(ui|api)/eslint",
+      "@vl/(ui|api)/eslint-*",
+      "@vl/(ui|api)/@vl/eslint-config/**",
+      "@vl/(ui|api)/@vl/eslint-config-typescript/**",
+      "@vl/api",
+      "@vl/api/**",
+      "**/eslint",
+      "**/yargs",
+      "**/yargs/**",
+      "**/web3",
+      "**/web3/**",
+      "**/bcrypt",
+      "**/bcrypt/**"
+    ]
+  },
+  "engines": {
+    "node": "^10.14.x",
+    "yarn": "^1.10.x"
+  },
+  "devDependencies": {
+    "wsrun": "^3.5.0"
+  }
+}

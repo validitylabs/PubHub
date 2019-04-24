@@ -1,0 +1,110 @@
+##
+# prepare build environment
+FROM node:dubnium-alpine as builder-base
+
+ENV YARN_VERSION 1.10.1
+ENV YARN_DIR /opt/yarn
+
+RUN apk --no-cache add git python make g++
+
+ADD https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v${YARN_VERSION}.tar.gz /opt/yarn.tar.gz
+RUN rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg && \
+    rm -rf $YARN_DIR && \
+    mkdir -p $YARN_DIR && \
+    tar -xzf /opt/yarn.tar.gz -C $YARN_DIR && \
+    ln -s $YARN_DIR/yarn-v$YARN_VERSION/bin/yarn $YARN_DIR/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/ && \
+    rm /opt/yarn.tar.gz
+
+##
+# Download and compile jo
+FROM alpine as jo
+
+RUN apk add --no-cache alpine-sdk && \
+    cd /tmp && curl -s -LO https://github.com/jpmens/jo/releases/download/v1.1/jo-1.1.tar.gz && \
+    tar xzf jo-1.1.tar.gz && \
+    cd jo-1.1 && \
+    ./configure && \
+    make check && \
+    make install
+
+##
+# development environment
+FROM builder-base as development
+
+ARG APPLICATION_PATH=applications/ui
+ENV APPLICATION_PATH=$APPLICATION_PATH
+ENV CI=true
+
+WORKDIR /srv
+
+COPY ./infrastructure/ui/entrypoint.dev.sh /usr/local/bin/start-app
+COPY --from=jo /usr/local/bin/jo /usr/local/bin/jo
+
+RUN chmod +x /usr/local/bin/start-app && \
+    chmod +x /usr/local/bin/jo
+
+EXPOSE 3000
+
+CMD ["sh", "/usr/local/bin/start-app"]
+
+
+##
+# build production environment
+FROM builder-base as builder-source-code-and-deps
+
+ARG APPLICATION_PATH=applications/ui
+
+WORKDIR /srv
+
+COPY ./.yarnrc /srv/.yarnrc
+COPY ./package.json /srv/package.json
+COPY ./yarn.lock /srv/yarn.lock
+COPY ./packages /srv/packages
+COPY ./$APPLICATION_PATH/package.json /srv/$APPLICATION_PATH/package.json
+RUN yarn install
+COPY ./$APPLICATION_PATH /srv/$APPLICATION_PATH
+
+
+##
+# build production environment
+FROM builder-source-code-and-deps as stage-test
+
+ARG APPLICATION_PATH=applications/ui
+ENV APPLICATION_PATH=$APPLICATION_PATH
+ENV CI=true
+
+WORKDIR /srv
+
+CMD ["yarn", "run", "test"]
+
+
+##
+# build production environment
+FROM builder-source-code-and-deps as stage-build
+
+ARG APPLICATION_PATH=applications/ui
+ENV CI=true
+
+WORKDIR /srv
+
+RUN cd ./$APPLICATION_PATH; yarn run build
+
+
+##
+# production environment
+FROM nginx:1.15.7-alpine
+
+ARG APPLICATION_PATH=applications/ui
+
+RUN rm -rf /etc/nginx/conf.d/*
+COPY ./infrastructure/ui/nginx-site.conf /etc/nginx/conf.d/site.conf
+COPY --from=stage-build /srv/$APPLICATION_PATH/build /usr/share/nginx/html
+COPY ./infrastructure/ui/entrypoint.sh /usr/local/bin/start-app
+COPY --from=jo /usr/local/bin/jo /usr/local/bin/jo
+
+RUN chmod +x /usr/local/bin/start-app && \
+    chmod +x /usr/local/bin/jo
+
+EXPOSE 80
+
+CMD ["sh", "/usr/local/bin/start-app"]

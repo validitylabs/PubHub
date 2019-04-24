@@ -1,0 +1,103 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+stages:
+  - build-test
+  - test
+  - build
+  - release
+  - deploy
+
+variables:
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  TEST_SERVER_HOST: 1.2.3.4
+  UI_CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/ui:test-$CI_COMMIT_REF_SLUG
+  UI_CONTAINER_PRERELEASE_IMAGE: $CI_REGISTRY_IMAGE/ui:$CI_COMMIT_REF_SLUG
+  UI_CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/ui:latest
+  API_CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/api:test-$CI_COMMIT_REF_SLUG
+  API_CONTAINER_PRERELEASE_IMAGE: $CI_REGISTRY_IMAGE/api:$CI_COMMIT_REF_SLUG
+  API_CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/api:latest
+
+before_script:
+  - docker login -u gitlab-ci-token -p "$CI_JOB_TOKEN" $CI_REGISTRY
+
+##
+# Build test images
+build-ui-test-image:
+  stage: build-test
+  script:
+    - docker build --pull -t $UI_CONTAINER_TEST_IMAGE --cache-from $UI_CONTAINER_TEST_IMAGE --target stage-test -f Dockerfile-UI .
+    - docker push $UI_CONTAINER_TEST_IMAGE
+
+build-api-test-image:
+  stage: build-test
+  script:
+    - docker build --pull -t $API_CONTAINER_TEST_IMAGE --cache-from $API_CONTAINER_TEST_IMAGE --target stage-test -f Dockerfile-API .
+    - docker push $API_CONTAINER_TEST_IMAGE
+
+##
+# Run tests
+test-ui:
+  stage: test
+  script:
+    - docker pull $UI_CONTAINER_TEST_IMAGE
+    - docker run $UI_CONTAINER_TEST_IMAGE
+
+test-api:
+  stage: test
+  script:
+    - docker pull $API_CONTAINER_TEST_IMAGE
+    - docker run $API_CONTAINER_TEST_IMAGE
+
+##
+# Build release images
+build-ui:
+  stage: build
+  script:
+    - docker build --pull -t $UI_CONTAINER_PRERELEASE_IMAGE --cache-from $UI_CONTAINER_TEST_IMAGE -f Dockerfile-UI .
+    - docker push $UI_CONTAINER_PRERELEASE_IMAGE
+
+build-api:
+  stage: build
+  script:
+    - docker build --pull -t $API_CONTAINER_PRERELEASE_IMAGE --cache-from $API_CONTAINER_TEST_IMAGE -f Dockerfile-API .
+    - docker push $API_CONTAINER_PRERELEASE_IMAGE
+
+##
+# Build publish release images
+release-ui-image:
+  stage: release
+  script:
+    - docker pull $UI_CONTAINER_PRERELEASE_IMAGE
+    - docker tag $UI_CONTAINER_PRERELEASE_IMAGE $UI_CONTAINER_RELEASE_IMAGE
+    - docker push $UI_CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+
+release-api-image:
+  stage: release
+  script:
+    - docker pull $API_CONTAINER_PRERELEASE_IMAGE
+    - docker tag $API_CONTAINER_PRERELEASE_IMAGE $API_CONTAINER_RELEASE_IMAGE
+    - docker push $API_CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+##
+# Deployment
+# deploy-test:
+#   stage: deploy
+#   before_script:
+#     - "which ssh-agent || (apk add --no-cache openssh)"
+#     - mkdir -p ~/.ssh
+#     - chmod 700 ~/.ssh
+#     - eval $(ssh-agent -s)
+#     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+#     - echo "$TEST_PRIVATE_KEY" | ssh-add -
+#   script:
+#     - ssh vl@$TEST_SERVER_HOST "cd ~/app && docker-compose pull -q && docker-compose up -d --quiet-pull"
+#   only:
+#     - master

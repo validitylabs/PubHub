@@ -1,0 +1,82 @@
+version: "3.4"
+services:
+  ##
+  # API
+  api:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-API
+      target: development
+    environment:
+      SSL_CERT: /etc/ssl/server.cert
+      SSL_KEY: /etc/ssl/server.key
+      UI_BASE_URL: https://localhost:3001
+      JWK_PRIVATE_FILE_PATH: /srv/infrastructure/api/jwk-private.json
+      JWK_PUBLIC_FILE_PATH: /srv/infrastructure/api/jwk-public.json
+      DB_HOST: api-db
+      DB_PORT: 3306
+      DB_NAME: vl-api
+      DB_USER: web
+      DB_PASSWORD: teddy-matrix-husky
+      DB_SYNCHRONIZE: "true"
+      DB_LOGGING: "true"
+    volumes:
+      - ./:/srv
+      - ./infrastructure/ssl/server.cert:/etc/ssl/server.cert
+      - ./infrastructure/ssl/server.key:/etc/ssl/server.key
+      - /srv/node_modules
+      - /srv/applications/api/node_modules
+      - /srv/applications/ui/node_modules
+      - /srv/packages/tslint-config/node_modules
+      - /srv/packages/utils/node_modules
+    depends_on:
+      - api-db
+    networks:
+      - frontend
+      - backend
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+  api-db:
+    image: mariadb:10.3
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: reviving-unbaked-eldest
+      MYSQL_DATABASE: vl-api
+      MYSQL_USER: web
+      MYSQL_PASSWORD: teddy-matrix-husky
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+
+  ##
+  # UI
+  ui:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-UI
+      target: development
+    environment:
+      HTTPS: "true"
+      PORT: 3001
+      APP_API_ENDPOINT: https://localhost:3000
+    volumes:
+      - ./:/srv
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api
+    networks:
+      - frontend
+    logging:
+      options:
+        max-size: "500k"
+        max-file: "10"
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
