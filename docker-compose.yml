@@ -39,7 +39,6 @@ services:
       - "9229:9229"
   api-db:
     image: mariadb:10.3
-    restart: always
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
     environment:
       MYSQL_ROOT_PASSWORD: reviving-unbaked-eldest
@@ -64,16 +63,17 @@ services:
       APP_API_ENDPOINT: https://localhost:3000
     volumes:
       - ./:/srv
+      - /srv/node_modules
+      - /srv/applications/api/node_modules
+      - /srv/applications/ui/node_modules
+      - /srv/packages/tslint-config/node_modules
+      - /srv/packages/utils/node_modules
     ports:
       - "3001:3001"
     depends_on:
       - api
     networks:
       - frontend
-    logging:
-      options:
-        max-size: "500k"
-        max-file: "10"
 
 networks:
   frontend:
