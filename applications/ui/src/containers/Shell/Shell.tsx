@@ -167,6 +167,9 @@ export interface IShellComponentProps {
 }
 
 const HomeLink = (props: any) => <NavLink to="/home" exact={false} {...props} />;
+const SearchLink = (props: any) => <NavLink to="/search" exact={false} {...props} />;
+const ProjectsLink = (props: any) => <NavLink to="/projects" exact={false} {...props} />;
+const RelevantWorksLink = (props: any) => <NavLink to="/works" exact={false} {...props} />;
 
 class ShellComponent extends React.Component<IShellComponentProps> {
     static defaultProps = {
@@ -328,7 +331,10 @@ class ShellComponent extends React.Component<IShellComponentProps> {
                                         <AccountCircle />
                                     </IconButton>
                                 ) : null} */}
-
+                                {/* trying to show an account icon by default */}
+                                <IconButton aria-haspopup="true" color="inherit">
+                                    <AccountCircle />
+                                </IconButton>
                                 {this.renderUserMenu()}
                             </div>
 
@@ -357,6 +363,15 @@ class ShellComponent extends React.Component<IShellComponentProps> {
                         <List>
                             <ListItem button key={'Home'} component={HomeLink}>
                                 <ListItemText primary={'Home'} />
+                            </ListItem>
+                            <ListItem button key={'Search'} component={SearchLink}>
+                                <ListItemText primary={'Search'} />
+                            </ListItem>
+                            <ListItem button key={'Projects'} component={ProjectsLink}>
+                                <ListItemText primary={'Own projects'} />
+                            </ListItem>
+                            <ListItem button key={'Relevant works'} component={RelevantWorksLink}>
+                                <ListItemText primary={'Relevant works'} />
                             </ListItem>
                         </List>
                     </Drawer>

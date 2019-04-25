@@ -5,6 +5,9 @@ import {AppRoute, AccessRestriction} from '../AppRoute';
 // import {ForgotPassword} from '../../pages/ForgotPassword';
 // import {ChangePassword} from '../../pages/ChangePassword';
 import {Home} from '../../pages/Home';
+import {Search} from '../../pages/Search';
+import {Projects} from '../../pages/Projects';
+import {RelevantWorks} from '../../pages/RelevantWorks';
 
 export const Routes = () => (
     <Switch>
@@ -27,5 +30,8 @@ export const Routes = () => (
             component={ChangePassword}
         /> */}
         <AppRoute exact path="/home" accessRestriction={AccessRestriction.public} accessRestrictionRedirect="/login" component={Home} />
+        <AppRoute exact path="/search" accessRestriction={AccessRestriction.public} accessRestrictionRedirect="/login" component={Search} />
+        <AppRoute exact path="/projects" accessRestriction={AccessRestriction.public} accessRestrictionRedirect="/login" component={Projects} />
+        <AppRoute exact path="/works" accessRestriction={AccessRestriction.public} accessRestrictionRedirect="/login" component={RelevantWorks} />
     </Switch>
 );
