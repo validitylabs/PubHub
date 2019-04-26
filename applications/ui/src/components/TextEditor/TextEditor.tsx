@@ -62,14 +62,12 @@ export interface ITextEditorComponentProps extends IContentDisplayProps {
     };
 }
 
-function Transition(props: any) {
-    return <Slide direction="up" {...props} />;
-}
+const Transition = (props: any) => <Slide direction="up" {...props} />;
 
 class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
-    state = {
-        open: false
-    };
+    // state = {
+    //     open: false
+    // };
 
     handleClickOpen = () => {
         const {displayEditor} = this.props;
@@ -92,9 +90,9 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
         const {classes, open} = this.props;
         return (
             <React.Fragment>
-                <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
+                {/* <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
                     Open full-screen dialog test
-                </Button>
+                </Button> */}
                 <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
                     {/* <Dialog fullScreen open={this.state.open} onClose={this.handleClose} TransitionComponent={Transition}> */}
                     <AppBar className={classes.appBar}>

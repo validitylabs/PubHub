@@ -1,4 +1,7 @@
-import React, {FunctionComponent} from 'react';
+import React from 'react';
+import {Dispatch} from 'redux';
+import {connect} from 'react-redux';
+import {store, RootState} from '../../store';
 import {NavLink} from 'react-router-dom';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
@@ -10,6 +13,9 @@ import createimg from '../../images/create.jpg';
 import searchimg from '../../images/search.jpg';
 import projectsimg from '../../images/projects.jpg';
 import referenceimg from '../../images/reference.jpg';
+import {IContent} from '../../store/content/content.types';
+import {readContentEditor as readContentEditorAction} from '../../store/content/content.actions';
+import {TramOutlined} from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -89,7 +95,13 @@ const styles = (theme: Theme) =>
         }
     });
 
-export interface IHomeProps {
+interface IContentDisplayProps {
+    open: boolean;
+    lastUpdateTime: Date;
+    displayEditor(): void;
+    closeEditor(): void;
+}
+export interface IHomeProps extends IContentDisplayProps {
     classes: {
         container: string;
         root: string;
@@ -107,84 +119,121 @@ const HomeLink = (props: any) => <NavLink to="/home" exact={false} {...props} />
 const SearchLink = (props: any) => <NavLink to="/search" exact={false} {...props} />;
 const ProjectsLink = (props: any) => <NavLink to="/projects" exact={false} {...props} />;
 const RelevantWorksLink = (props: any) => <NavLink to="/works" exact={false} {...props} />;
+// const ShowEditor = (props: any) => <TextEditor open={true} {...props} />;
 
 const images = [
     {
         url: searchimg,
         title: 'Search',
         width: '100%',
-        link: SearchLink
+        link: SearchLink,
+        other: ''
     },
     {
         url: createimg,
         title: 'Create work',
         width: '100%',
-        link: HomeLink
+        link: HomeLink,
+        other: 'TEXT_EDITOR'
     },
     {
         url: projectsimg,
         title: 'Own projects',
         width: '100%',
-        link: ProjectsLink
+        link: ProjectsLink,
+        other: ''
     },
     {
         url: referenceimg,
         title: 'Relevant work',
         width: '100%',
-        link: RelevantWorksLink
+        link: RelevantWorksLink,
+        other: ''
     }
 ];
 
-const HomeComponent: FunctionComponent<IHomeProps> = (props) => {
-    const {classes} = props;
-
-    return (
-        <React.Fragment>
-            <Grid container className={classes.container} direction="column" spacing={16}>
-                <Grid item>
-                    <PageTitle text="PubHub" />
-                </Grid>
-                <Grid item>Welcome to PubHub! A decentralised publication management platform.</Grid>
-                <div className={classes.root}>
-                    <Grid container spacing={40}>
-                        {images.map((image) => (
-                            <Grid item xs={12} sm={6}>
-                                <ButtonBase
-                                    focusRipple
-                                    key={image.title}
-                                    className={classes.image}
-                                    focusVisibleClassName={classes.focusVisible}
-                                    component={image.link}
-                                    style={{
-                                        width: image.width
-                                    }}
-                                >
-                                    <span
-                                        className={classes.imageSrc}
-                                        style={{
-                                            backgroundImage: `url(${image.url})`
-                                        }}
-                                    />
-                                    <span className={classes.imageBackdrop} />
-                                    <span className={classes.imageButton}>
-                                        <Typography component="span" variant="h5" color="inherit" className={classes.imageTitle}>
-                                            {image.title}
-                                            <span className={classes.imageMarked} />
-                                        </Typography>
-                                    </span>
-                                </ButtonBase>
-                            </Grid>
-                        ))}
-                    </Grid>
-                    <Grid item>
-                        <TextEditor />
-                    </Grid>
-                </div>
-            </Grid>
-        </React.Fragment>
-    );
+const defaultContentState: IContent = {
+    id: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '',
+    title: '',
+    text: ''
 };
+
+class HomeComponent extends React.Component<IHomeProps> {
+    handleClickOpen = () => {
+        const {displayEditor} = this.props;
+        console.log(store.getState());
+        displayEditor();
+    };
+
+    render() {
+        const {classes, open} = this.props;
+
+        return (
+            <React.Fragment>
+                <Grid container className={classes.container} direction="column" spacing={16}>
+                    <Grid item>
+                        <PageTitle text="PubHub" />
+                    </Grid>
+                    <Grid item>Welcome to PubHub! A decentralised publication management platform.</Grid>
+                    <div className={classes.root}>
+                        <Grid container spacing={40}>
+                            {images.map((image) => (
+                                <Grid item xs={12} sm={6}>
+                                    <ButtonBase
+                                        focusRipple
+                                        key={image.title}
+                                        className={classes.image}
+                                        focusVisibleClassName={classes.focusVisible}
+                                        // component={image.link}
+                                        component={image.other === 'TEXT_EDITOR' ? 'button' : image.link}
+                                        onClick={image.other === 'TEXT_EDITOR' ? this.handleClickOpen : undefined}
+                                        style={{
+                                            width: image.width
+                                        }}
+                                    >
+                                        <span
+                                            className={classes.imageSrc}
+                                            style={{
+                                                backgroundImage: `url(${image.url})`
+                                            }}
+                                        />
+                                        <span className={classes.imageBackdrop} />
+                                        <span className={classes.imageButton}>
+                                            <Typography component="span" variant="h5" color="inherit" className={classes.imageTitle}>
+                                                {image.title}
+                                                <span className={classes.imageMarked} />
+                                            </Typography>
+                                        </span>
+                                    </ButtonBase>
+                                </Grid>
+                            ))}
+                        </Grid>
+                        <Grid item>
+                            <TextEditor />
+                        </Grid>
+                    </div>
+                </Grid>
+            </React.Fragment>
+        );
+    }
+}
 
 const StyledHomeComponent = withStyles(styles, {withTheme: true})(HomeComponent);
 
-export {StyledHomeComponent as Home};
+const mapStateToProps = ({contentEditor}: RootState) => ({
+    open: contentEditor.display
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    displayEditor: () => dispatch(readContentEditorAction(defaultContentState))
+});
+
+const Home = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(StyledHomeComponent);
+
+export {Home};
