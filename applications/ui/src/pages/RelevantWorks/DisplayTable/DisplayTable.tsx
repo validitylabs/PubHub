@@ -26,9 +26,9 @@ function createData(title: string, author: string, year: number) {
 }
 
 const inputRows: IWork[] = [
-    createData('Frozen The effect of UV radiation on photosynthetic production of the coral ...', 'Buergel et al.', 2019),
-    createData('A casual relationship between UV radiation and coral bleaching in ...', 'Willy et al.', 2018),
-    createData('Symbiosis and UV radiation: a case study on negative growth rate ...', 'Mark et al', 1998)
+    createData('Diversity in tropical rain forests and coral reefs', 'JH Connell', 1978),
+    createData('Coral reefs under rapid climate change and ocean acidification', 'Hoegh-Guldberg et al.', 2007),
+    createData('Climate change, human impacts, and the resilience of coral reefs', 'Hughes et al.', 2003)
 ];
 
 const SampleDisplayTableComponent: FunctionComponent<IDisplayTableProps> = (props) => {

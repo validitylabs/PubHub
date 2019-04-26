@@ -1,8 +1,8 @@
 import React, {FunctionComponent} from 'react';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
-import Paper from '@material-ui/core/Paper';
 import PageTitle from '../../components/PageTitle';
+import {DisplayTable} from './DisplayTable';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -35,8 +35,9 @@ const ProjectsComponent: FunctionComponent<IProjectsProps> = (props) => {
                 <Grid item>
                     <PageTitle text="Own projects" />
                 </Grid>
+                <Grid item>This is the page that displays all the projects created by the current injected Ethereum address.</Grid>
                 <Grid item>
-                    <Paper className={classes.paper}>This is the page that displays all the projects created by the current injected Ethereum address</Paper>
+                    <DisplayTable />
                 </Grid>
             </Grid>
         </React.Fragment>
