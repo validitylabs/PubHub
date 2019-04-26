@@ -3,6 +3,7 @@ import {NavLink} from 'react-router-dom';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import PageTitle from '../../components/PageTitle';
+import {TextEditor} from '../../components/TextEditor';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import createimg from '../../images/create.jpg';
@@ -174,6 +175,9 @@ const HomeComponent: FunctionComponent<IHomeProps> = (props) => {
                                 </ButtonBase>
                             </Grid>
                         ))}
+                    </Grid>
+                    <Grid item>
+                        <TextEditor />
                     </Grid>
                 </div>
             </Grid>
