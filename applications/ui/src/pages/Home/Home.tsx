@@ -15,7 +15,6 @@ import projectsimg from '../../images/projects.jpg';
 import referenceimg from '../../images/reference.jpg';
 import {IContent} from '../../store/content/content.types';
 import {readContentEditor as readContentEditorAction} from '../../store/content/content.actions';
-import {TramOutlined} from '@material-ui/icons';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -119,7 +118,6 @@ const HomeLink = (props: any) => <NavLink to="/home" exact={false} {...props} />
 const SearchLink = (props: any) => <NavLink to="/search" exact={false} {...props} />;
 const ProjectsLink = (props: any) => <NavLink to="/projects" exact={false} {...props} />;
 const RelevantWorksLink = (props: any) => <NavLink to="/works" exact={false} {...props} />;
-// const ShowEditor = (props: any) => <TextEditor open={true} {...props} />;
 
 const images = [
     {
@@ -169,7 +167,7 @@ class HomeComponent extends React.Component<IHomeProps> {
     };
 
     render() {
-        const {classes, open} = this.props;
+        const {classes} = this.props;
 
         return (
             <React.Fragment>
@@ -187,7 +185,6 @@ class HomeComponent extends React.Component<IHomeProps> {
                                         key={image.title}
                                         className={classes.image}
                                         focusVisibleClassName={classes.focusVisible}
-                                        // component={image.link}
                                         component={image.other === 'TEXT_EDITOR' ? 'button' : image.link}
                                         onClick={image.other === 'TEXT_EDITOR' ? this.handleClickOpen : undefined}
                                         style={{

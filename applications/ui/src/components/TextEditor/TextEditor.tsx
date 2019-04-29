@@ -25,11 +25,11 @@ const styles = (theme: Theme) =>
             flex: 1
         },
         container: {
-            marginLeft: '1vh',
-            marginRight: '1vh',
+            marginLeft: '1%',
+            marginRight: '1%',
             display: 'flex',
             flexWrap: 'wrap',
-            width: '100%'
+            width: '98%'
         },
         textField: {
             marginLeft: theme.spacing.unit,
@@ -65,23 +65,14 @@ export interface ITextEditorComponentProps extends IContentDisplayProps {
 const Transition = (props: any) => <Slide direction="up" {...props} />;
 
 class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
-    // state = {
-    //     open: false
-    // };
-
     handleClickOpen = () => {
         const {displayEditor} = this.props;
-        // this.setState({open: true});
-        // this.setState({open});
         console.log('when open', store.getState());
         displayEditor();
     };
 
     handleClose = () => {
-        // this.setState({open: false});
         const {closeEditor} = this.props;
-        // this.setState({open: true});
-        // this.setState({open});
         console.log('when close', store.getState());
         closeEditor();
     };
@@ -90,11 +81,7 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
         const {classes, open} = this.props;
         return (
             <React.Fragment>
-                {/* <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
-                    Open full-screen dialog test
-                </Button> */}
                 <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
-                    {/* <Dialog fullScreen open={this.state.open} onClose={this.handleClose} TransitionComponent={Transition}> */}
                     <AppBar className={classes.appBar}>
                         <Toolbar>
                             <IconButton color="inherit" onClick={this.handleClose} aria-label="Close">
@@ -124,7 +111,7 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
                                 label="Content"
                                 placeholder="Please enter content here"
                                 multiline
-                                rows="10"
+                                rows="40"
                                 fullWidth
                                 className={classes.textField}
                                 margin="normal"
