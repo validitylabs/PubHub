@@ -15,6 +15,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import {IContent} from '../../store/content/content.types';
 import {readContentEditor as readContentEditorAction, cancelContentEditor as cancelContentEditorAction} from '../../store/content/content.actions';
+// tslint:disable-next-line
+const Ipfs = require('ipfs');
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -64,6 +66,15 @@ export interface ITextEditorComponentProps extends IContentDisplayProps {
 
 const Transition = (props: any) => <Slide direction="up" {...props} />;
 
+const node2 = new Ipfs({repo: 'ipfs-' + Math.random()});
+node2.once('ready', () => {
+    console.log('2 - Online status: ', node2.isOnline() ? 'online' : 'offline');
+    //   document.getElementById("status").innerHTML= 'Node status: ' + (node.isOnline() ? 'online' : 'offline')
+    //   // You can write more code here to use it. Use methods like
+    //   // node.add, node.get. See the API docs here:
+    //   // https://github.com/ipfs/interface-ipfs-core
+});
+
 class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
     handleClickOpen = () => {
         const {displayEditor} = this.props;
@@ -111,7 +122,7 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
                                 label="Content"
                                 placeholder="Please enter content here"
                                 multiline
-                                rows="40"
+                                rows="25"
                                 fullWidth
                                 className={classes.textField}
                                 margin="normal"

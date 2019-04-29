@@ -3,6 +3,7 @@ import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import Paper from '@material-ui/core/Paper';
 import PageTitle from '../../components/PageTitle';
+import Typography from '@material-ui/core/Typography';
 import {DisplayTable} from './DisplayTable';
 
 const styles = (theme: Theme) =>
@@ -36,7 +37,11 @@ const RelevantWorksComponent: FunctionComponent<IRelevantWorksProps> = (props) =
                 <Grid item>
                     <PageTitle text="Relevant works" />
                 </Grid>
-                <Grid item>This is the page that displays all the relevant works suggested by PubHub, based on user's existing projects.</Grid>
+                <Grid item>
+                    <Typography paragraph={true} color="inherit">
+                        This is the page that displays all the relevant works suggested by PubHub, based on user's existing projects.
+                    </Typography>
+                </Grid>
                 <Grid item>
                     <DisplayTable />
                 </Grid>

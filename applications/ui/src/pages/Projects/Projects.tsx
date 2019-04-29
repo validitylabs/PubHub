@@ -2,6 +2,7 @@ import React, {FunctionComponent} from 'react';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import PageTitle from '../../components/PageTitle';
+import Typography from '@material-ui/core/Typography';
 import {DisplayTable} from './DisplayTable';
 
 const styles = (theme: Theme) =>
@@ -35,7 +36,11 @@ const ProjectsComponent: FunctionComponent<IProjectsProps> = (props) => {
                 <Grid item>
                     <PageTitle text="Own projects" />
                 </Grid>
-                <Grid item>This is the page that displays all the projects created by the current injected Ethereum address.</Grid>
+                <Grid item>
+                    <Typography paragraph={true} color="inherit">
+                        This is the page that displays all the projects created by the current injected Ethereum address.
+                    </Typography>
+                </Grid>
                 <Grid item>
                     <DisplayTable />
                 </Grid>

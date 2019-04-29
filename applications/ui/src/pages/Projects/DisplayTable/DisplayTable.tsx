@@ -28,7 +28,9 @@ function createData(title: string, author: string, year: number) {
 const inputRows: IWork[] = [
     createData('Temporal effects of ocean warming and acidification on coral–algal ...', 'Doe et al.', 2019),
     createData('Photochemical response of the scleractinian coral Stylophora ...', 'Doe et al.', 2018),
-    createData('Resolving coral photoacclimation dynamics through coupled ...', 'Doe et al.', 2017)
+    createData('Resolving coral photoacclimation dynamics through coupled ...', 'Doe et al.', 2017),
+    createData('Fishing, trophic cascades, and the process of grazing on coral reefs', 'Doe et al.', 2006),
+    createData('Effects of terrestrial runoff on the ecology of corals and coral reefs: review and synthesis', 'Doe et al.', 2005)
 ];
 
 const SampleDisplayTableComponent: FunctionComponent<IDisplayTableProps> = (props) => {

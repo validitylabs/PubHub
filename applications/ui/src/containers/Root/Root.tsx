@@ -70,6 +70,9 @@ const getMuiThemeOptions = (): ThemeOptions => {
                     fontWeight: 400,
                     marginTop: '25px',
                     marginBottom: 0
+                },
+                h4: {
+                    marginBottom: 0
                 }
             },
             MuiLink: {

@@ -28,7 +28,9 @@ function createData(title: string, author: string, year: number) {
 const inputRows: IWork[] = [
     createData('Diversity in tropical rain forests and coral reefs', 'JH Connell', 1978),
     createData('Coral reefs under rapid climate change and ocean acidification', 'Hoegh-Guldberg et al.', 2007),
-    createData('Climate change, human impacts, and the resilience of coral reefs', 'Hughes et al.', 2003)
+    createData('Climate change, human impacts, and the resilience of coral reefs', 'Hughes et al.', 2003),
+    createData('Connectivity and management of Caribbean coral reefs', 'CM Roberts', 1997),
+    createData('Thresholds and the resilience of Caribbean coral reefs', 'Mumby et al.', 2007)
 ];
 
 const SampleDisplayTableComponent: FunctionComponent<IDisplayTableProps> = (props) => {

@@ -3,6 +3,7 @@ import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import Paper from '@material-ui/core/Paper';
 import PageTitle from '../../components/PageTitle';
+import Typography from '@material-ui/core/Typography';
 import {DatePicker} from '../../components/DatePicker';
 import {SearchField} from './SearchField';
 import {DisplayTable} from './DisplayTable';
@@ -23,7 +24,7 @@ const styles = (theme: Theme) =>
         },
         offset: {
             paddingLeft: '5%',
-            marginBottom: '1vh'
+            marginTop: '1vh'
         }
     });
 
@@ -48,11 +49,17 @@ const SearchComponent: FunctionComponent<ISearchProps> = (props) => {
                     <Paper className={classes.paper}>
                         <SearchField />
                         <Grid container className={classes.offset} direction="row" spacing={16} alignItems="baseline">
-                            only shown projects last modified from
+                            <Typography paragraph={true} color="inherit">
+                                only shown projects last modified from
+                            </Typography>
                             <DatePicker label="from" defaultValue="2018-02-25" />
-                            to
+                            <Typography paragraph={true} color="inherit">
+                                to
+                            </Typography>
                             <DatePicker label="to" defaultValue="2019-02-25" />
-                            written by (author)
+                            <Typography paragraph color="inherit">
+                                written by (author)
+                            </Typography>
                             {/* <Form>
                                 <Field name="text" label="Comment" component={TextField} multiline />
                             </Form> */}
