@@ -26,7 +26,7 @@ const styles = (theme: Theme) =>
         },
         root: {
             flexGrow: 1,
-            marginTop: '5vh'
+            marginTop: '3vh'
         },
         image: {
             position: 'relative',
@@ -171,11 +171,15 @@ class HomeComponent extends React.Component<IHomeProps> {
 
         return (
             <React.Fragment>
-                <Grid container className={classes.container} direction="column" spacing={16}>
+                <Grid container className={classes.container} direction="column" spacing={8}>
                     <Grid item>
-                        <PageTitle text="PubHub" />
+                        <PageTitle text="Welcome to PubHub!" />
                     </Grid>
-                    <Grid item>Welcome to PubHub! A decentralised publication management platform.</Grid>
+                    <Grid item>
+                        <Typography variant="subtitle1" color="inherit">
+                            A decentralised publication management platform.
+                        </Typography>
+                    </Grid>
                     <div className={classes.root}>
                         <Grid container spacing={40}>
                             {images.map((image) => (
