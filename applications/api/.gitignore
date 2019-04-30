@@ -1,2 +1,6 @@
 # production
 /dist
+
+# dev modules
+/src/modules/mail
+/src/modules/database

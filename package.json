@@ -1,5 +1,5 @@
 {
-  "name": "whitelabel-webapp",
+  "name": "pubhub-poc",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@https://gitlab.com/vl/tokenization/validity-labs/web-app.git",
