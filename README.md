@@ -1,4 +1,14 @@
-# Validity Labs Whitelabel Web App
+# PubHub Proof-of-Concept
+
+This project is built for the PubHub project in collaboration with the ETH Library, at the SEED 2019 conference.
+
+## Disclaimer
+
+This repository contains the first version of the PoC, which is not 100% open-source ready.
+There may contain some important credentials for the simplicity and easiness of the development.
+When deploying to the public, please create another repository and push the latest deploy-ready version there.
+
+This project is created based on Validity Labs's Whitelabel Web App.
 
 ## Development setup
 
@@ -37,43 +47,22 @@ docker-compose restart
 
 Note that it is most of the time not required to rebuild the containers because the build scripts of the applications are executed while starting the containers and not during the build process.
 
-## Docker containers
+If there is error message regarding the node package `bcrypt`, the reason may come from the failure of rebuilding the package.
 
-### API
+The solution is to rebuild the docker container.
 
-#### Options
+```
+docker-compose up -d --force-recreate
+```
 
-| Key                     | Description                                                                                                                                                                                                                   |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SSL_CERT`              | Path to the ssl certificate. (optional)                                                                                                                                                                                       |
-| `SSL_KEY`               | Path to the private key of the ssl certificate. (optional)                                                                                                                                                                    |
-| `JWK_PRIVATE_FILE_PATH` | Path to a JSON Web Key file (json) which contains the private key for signing JSON web tokens. A new key pair can be generated with the cli of the auth application by the following command: `node ./cli key:create <path>`  |
-| `JWK_PUBLIC_FILE_PATH`  | Path to a JSON Web Key file (json) which contains the public key for verifying JSON web tokens. A new key pair can be generated with the cli of the auth application by the following command: `node ./cli key:create <path>` |
-| `DB_HOST`               | Database host.                                                                                                                                                                                                                |
-| `DB_PORT`               | Database port.                                                                                                                                                                                                                |
-| `DB_NAME`               | Database name.                                                                                                                                                                                                                |
-| `DB_USER`               | Database user.                                                                                                                                                                                                                |
-| `DB_PASSWORD`           | Database password.                                                                                                                                                                                                            |
-| `DB_SYNCHRONIZE`        | Indicates if database schema should be auto created on every application launch. Be careful with this option and don't use this in production - otherwise you can lose production data.                                       |
-| `DB_LOGGING`            | Indicates if logging is enabled or not. If set to true then query and error logging will be enabled.                                                                                                                          |
+Sometimes there is no need to force recreate the entire docker container, only part of it (mostly it's the `api` container) needs to restart.
 
-### UI
+```
+docker-compose restart api
+```
 
-#### Options
+To make sure that the api container works, listen to the logs.
 
-| Key                   | Description                                  |
-| --------------------- | -------------------------------------------- |
-| `APP_API_ENDPOINT`    | API Endpoint (URL without a trailing slash). |
-| `APP_APPLICATION_ID`  | ID of the Application (e.g. "ui").           |
-| `APP_INFURA_NODE_URL` | URL of the infura node.                      |
-
-When using the development stage of the docker container, there are also the options of [Create React App](https://facebook.github.io/create-react-app/docs/advanced-configuration) available.
-
-Please note that you must create custom environment variables beginning with APP\_. Any other variables will be ignored to avoid accidentally exposing a private key on the machine that could have the same name.
-
-### MariaDB
-
-MariaDB is accessible outside of the docker container. The credentials can be found in the docker-compose file.
-The database is typically running on port 3306 on localhost.
-
-Please consult the official documentation of the docker container for more details: https://hub.docker.com/_/mariadb
+```
+docker-compose logs -f api
+```
