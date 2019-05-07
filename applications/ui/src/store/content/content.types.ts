@@ -1,4 +1,4 @@
-export enum ContentActionTypes {
+export enum ContentFetchActionTypes {
     GET = '@@content/GET',
     GET_REQUEST = '@@content/GET_REQUEST',
     GET_RESPONSE = '@@content/GET_RESPONSE',
@@ -14,7 +14,7 @@ export interface IContent {
     text: string;
 }
 
-export enum ContentDisplayActionTypes {
+export enum ContentActionTypes {
     READ_CONTENT = 'READ_CONTENT',
     WRITE_CONTENT = 'WRITE_CONTENT',
     CANCEL_CONTENT = 'CANCEL_CONTENT',

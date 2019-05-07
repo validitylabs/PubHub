@@ -29,7 +29,7 @@
   },
   "engines": {
     "node": "^10.14.x",
-    "yarn": "^1.10.x"
+    "yarn": "1.10.1"
   },
   "devDependencies": {
     "wsrun": "^3.5.0"

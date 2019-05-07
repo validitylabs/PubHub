@@ -12,3 +12,6 @@
 
 # runtime config
 /public/app-config.js
+
+# node data
+/ipfs*

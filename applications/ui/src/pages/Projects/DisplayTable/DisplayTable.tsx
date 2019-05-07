@@ -30,7 +30,7 @@ const inputRows: IWork[] = [
     createData('Photochemical response of the scleractinian coral Stylophora ...', 'Doe et al.', 2018),
     createData('Resolving coral photoacclimation dynamics through coupled ...', 'Doe et al.', 2017),
     createData('Fishing, trophic cascades, and the process of grazing on coral reefs', 'Doe et al.', 2006),
-    createData('Effects of terrestrial runoff on the ecology of corals and coral reefs: review and synthesis', 'Doe et al.', 2005)
+    createData('Effects of terrestrial runoff on the ecology of corals and coral reefs: review', 'Doe et al.', 2005)
 ];
 
 const SampleDisplayTableComponent: FunctionComponent<IDisplayTableProps> = (props) => {

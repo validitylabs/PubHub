@@ -183,7 +183,7 @@ class HomeComponent extends React.Component<IHomeProps> {
                     <div className={classes.root}>
                         <Grid container spacing={40}>
                             {images.map((image) => (
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={6} key={image.title}>
                                     <ButtonBase
                                         focusRipple
                                         key={image.title}

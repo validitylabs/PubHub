@@ -1,19 +1,19 @@
 import {action} from 'typesafe-actions';
-import {IContent, ContentDisplayActionTypes} from './content.types';
+import {IContent, ContentActionTypes} from './content.types';
 
 export const readContentEditor = (content: IContent) =>
-    action(ContentDisplayActionTypes.READ_CONTENT, {
+    action(ContentActionTypes.READ_CONTENT, {
         content
     });
 
 export const writeContentEditor = (content: IContent) =>
-    action(ContentDisplayActionTypes.WRITE_CONTENT, {
+    action(ContentActionTypes.WRITE_CONTENT, {
         content
     });
 
-export const cancelContentEditor = () => action(ContentDisplayActionTypes.CANCEL_CONTENT);
+export const cancelContentEditor = () => action(ContentActionTypes.CANCEL_CONTENT);
 
 export const saveContentEditor = (content: IContent) =>
-    action(ContentDisplayActionTypes.SAVE_CONTENT, {
+    action(ContentActionTypes.SAVE_CONTENT, {
         content
     });
