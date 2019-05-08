@@ -1,5 +1,6 @@
 import React, {FunctionComponent} from 'react';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import Paper from '@material-ui/core/Paper';
 import PageTitle from '../../components/PageTitle';
@@ -11,20 +12,26 @@ import {DisplayTable} from './DisplayTable';
 const styles = (theme: Theme) =>
     createStyles({
         container: {
+            maxWidth: '900px',
             marginLeft: 'auto',
             marginRight: 'auto',
-            maxWidth: '900px',
             marginBottom: '1vh'
         },
         paper: {
             padding: theme.spacing.unit * 2,
             textAlign: 'center',
             color: theme.palette.text.secondary,
-            alignItems: 'center'
+            alignItems: 'center',
+            paddingTop: theme.spacing.unit * 4
         },
         offset: {
             paddingLeft: '5%',
             marginTop: '1vh'
+        },
+        textField: {
+            marginLeft: theme.spacing.unit,
+            marginRight: theme.spacing.unit,
+            width: '1.5vh'
         }
     });
 
@@ -33,6 +40,7 @@ export interface ISearchProps {
         container: string;
         paper: string;
         offset: string;
+        textField: string;
     };
 }
 
@@ -58,11 +66,15 @@ const SearchComponent: FunctionComponent<ISearchProps> = (props) => {
                             </Typography>
                             <DatePicker label="to" defaultValue="2019-02-25" />
                             <Typography paragraph color="inherit">
-                                written by (author)
+                                written by
                             </Typography>
-                            {/* <Form>
-                                <Field name="text" label="Comment" component={TextField} multiline />
-                            </Form> */}
+                            <TextField
+                                id="standard-with-placeholder"
+                                // placeholder="Author"
+                                label="author"
+                                className={classes.textField}
+                                margin="normal"
+                            />
                         </Grid>
                     </Paper>
                 </Grid>
