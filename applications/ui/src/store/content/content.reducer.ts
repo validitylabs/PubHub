@@ -1,6 +1,5 @@
 import {Reducer, AnyAction} from 'redux';
 import {IContent, IContentEditor, ContentActionTypes} from './content.types';
-import {create} from 'domain';
 
 export const initialContentState: IContent = {
     id: '0',

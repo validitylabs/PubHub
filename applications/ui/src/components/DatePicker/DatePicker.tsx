@@ -1,7 +1,6 @@
 import React, {FunctionComponent} from 'react';
-// import PropTypes from 'prop-types';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
-import {withStyles, createStyles, Grid} from '@material-ui/core';
+import {withStyles, createStyles} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
 const styles = (theme: Theme) =>

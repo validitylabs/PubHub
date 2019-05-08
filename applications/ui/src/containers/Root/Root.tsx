@@ -9,7 +9,9 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 const getMuiThemeOptions = (): ThemeOptions => {
     // Allow usage of breakpoints in create mui theme
     // tslint:disable-next-line:no-unused
-    const breakpoints = createBreakpoints({});
+    // createBreakpoints({});
+    // eslint-disable-next-line
+    const _breakpoints = createBreakpoints({});
 
     return {
         palette: {

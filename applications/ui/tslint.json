@@ -1,6 +1,7 @@
 {
   "defaultSeverity": "error",
   "extends": ["@vl/tslint-config", "tslint-react", "tslint-plugin-prettier"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "prettier": true,
     "indent": [true, "spaces", 4],

@@ -276,6 +276,7 @@ class ShellComponent extends React.Component<IShellComponentProps> {
             // const {classes, theme, auth} = this.props;
             const {classes, theme} = this.props;
             const {open, anchorEl} = this.state;
+            // eslint-disable-next-line
             const _isMenuOpen = Boolean(anchorEl);
 
             return (
@@ -293,7 +294,7 @@ class ShellComponent extends React.Component<IShellComponentProps> {
                                 <React.Fragment>
                                     <div className={classes.menuButton} />
                                     <Typography variant="h6" className={classes.logoLink}>
-                                        <img className={classes.logo} src={logo} />
+                                        <img className={classes.logo} src={logo} alt={'project logo'} />
                                     </Typography>
                                 </React.Fragment>
                             ) : (
@@ -308,7 +309,7 @@ class ShellComponent extends React.Component<IShellComponentProps> {
                                     </IconButton>
 
                                     <Link variant="h6" underline="none" to="/" className={classNames(classes.logoLink, classes.logoLinkA)}>
-                                        <img className={classes.logo} src={logo} />
+                                        <img className={classes.logo} src={logo} alt={'Other logo'} />
                                     </Link>
                                 </React.Fragment>
                             )}
@@ -393,6 +394,7 @@ class ShellComponent extends React.Component<IShellComponentProps> {
 
 export const StyledShellComponent = withStyles(styles, {withTheme: true})(ShellComponent);
 
+// eslint-disable-next-line
 const mapStateToProps = ({}: RootState) => ({
     // auth
 });

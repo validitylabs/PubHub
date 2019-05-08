@@ -79,6 +79,7 @@ class AppRouteComponent extends Component<IAppRouteComponentProps & IAppRouteCom
     }
 }
 
+// eslint-disable-next-line
 const mapStateToProps = ({}: RootState) => ({
     // auth
 });

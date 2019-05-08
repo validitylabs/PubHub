@@ -1,7 +1,6 @@
 import React, {FunctionComponent} from 'react';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
-import Paper from '@material-ui/core/Paper';
 import PageTitle from '../../components/PageTitle';
 import Typography from '@material-ui/core/Typography';
 import {DisplayTable} from './DisplayTable';
