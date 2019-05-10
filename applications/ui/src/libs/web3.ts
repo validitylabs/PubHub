@@ -63,18 +63,17 @@ const initializeContract = () => {
     console.log(' [ contract initialized ] At ', theContract.address);
 };
 
-export const getCurrentAddress = async () => {
-    // const newAddress = web3 === null ? '' : await web3.eth.getAccounts();
-    // currentAccount = newAddress[0];
-    // checking the checksum function
+export const getCurrentAddress = async (): Promise<string> => {
+    let accountAddress: string;
     if (web3 === null) {
-        currentAccount = '';
+        accountAddress = '';
     } else {
         const checkingAddress = await web3.eth.getAccounts();
-        currentAccount = checkingAddress[0];
+        accountAddress = checkingAddress[0];
         console.log(' [ web3 make uppercase ] ', currentAccount.toUpperCase());
     }
-    return currentAccount;
+    currentAccount = accountAddress;
+    return accountAddress;
 };
 
 export const isInstalled = async () => {
@@ -118,12 +117,13 @@ export const isInstalled = async () => {
 };
 
 export const writeToSmartContract = (ipfsDigest: string) => {
-    console.log(` [ web3 writeToSmartContract ] ${currentAccount} tries to write ${ipfsDigest} on chain.`);
+    console.log(` [ web3 writeToSmartContract ] ${currentAccount} tries to write ${ipfsDigest} on chain. Of length ${ipfsDigest.length}`);
+    // optimize the data stroage by checking the length and slicing the first two bytes
+    const digest = ipfsDigest.length === 46 && ipfsDigest.startsWith('Qm') ? ipfsDigest.slice(2) : ipfsDigest;
     theContract.methods
-        .writeToIpfs(`"${ipfsDigest}"`)
+        .writeToIpfs(`"${digest}"`)
         .send({from: web3.utils.toChecksumAddress(currentAccount)})
         .on('transactionHash', (hash: any) => {
-            // }), (transactionHash: any) => {
             console.log(' [ web3 called function ] TxHash ', hash);
         });
 };

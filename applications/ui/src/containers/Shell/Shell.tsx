@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {store, RootState} from '../../store';
 // import {IAuthState} from '../../store/auth/auth.types';
 // import {logout as logoutAction} from '../../store/auth/auth.actions';
-import {IAccount, AccountState} from '../../store/ethereum/ethereum.types';
+import {AccountState} from '../../store/ethereum/ethereum.types';
 import {
     updateAccount as updateAccountAction,
     updateIpfs as updateIpfsAction,
