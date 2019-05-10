@@ -1,9 +1,15 @@
 import React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {RootState} from '../../store';
+import {store, RootState} from '../../store';
 // import {IAuthState} from '../../store/auth/auth.types';
 // import {logout as logoutAction} from '../../store/auth/auth.actions';
+import {IAccount, AccountState} from '../../store/ethereum/ethereum.types';
+import {
+    updateAccount as updateAccountAction,
+    updateIpfs as updateIpfsAction,
+    logoutAccount as logoutAccountAction
+} from '../../store/ethereum/ethereum.actions';
 import classNames from 'classnames';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import {withStyles} from '@material-ui/core/styles';
@@ -31,6 +37,7 @@ import {NavLink} from 'react-router-dom';
 import logo from '../../images/logo.png';
 import {Link} from '../../components/Link';
 import {FloatProperty, UserSelectProperty} from 'csstype';
+import {getCurrentAddress, isInstalled} from '../../libs/web3';
 
 const drawerWidth = 240;
 
@@ -139,8 +146,19 @@ const styles = (theme: Theme) => ({
 //     logout(): void;
 // }
 
+interface IEthereumAccountStateProps {
+    ethereumAccount: AccountState;
+}
+
+interface IEthereumAccountDispatchProps {
+    updateAccount(address: string): void;
+    updateIpfs(ipfsDigest: string): void;
+    logoutAccount(): void;
+}
+
 // export interface IShellComponentProps extends IAuthCallbackStateProps, IAuthCallbackDispatchProps {
-export interface IShellComponentProps {
+export interface IShellComponentProps extends IEthereumAccountStateProps, IEthereumAccountDispatchProps {
+    // export interface IShellComponentProps {
     classes: {
         logo: string;
         logoLink: string;
@@ -269,6 +287,14 @@ class ShellComponent extends React.Component<IShellComponentProps> {
         );
     }
 
+    async componentDidMount() {
+        await isInstalled();
+        const {updateAccount} = this.props;
+        const signerAddress: string = await getCurrentAddress();
+        updateAccount(signerAddress[0]);
+        console.log(' [componentDidMount reducer] ', store.getState().ethereumAccount);
+    }
+
     render() {
         const {enableHeaderAndDrawer, disableNavigation, children} = this.props;
 
@@ -333,6 +359,8 @@ class ShellComponent extends React.Component<IShellComponentProps> {
                                     </IconButton>
                                 ) : null} */}
                                 {/* trying to show an account icon by default */}
+                                {/* {currentAddress === null ? null : <Typography>{currentAddress}</Typography>} */}
+                                {/* <Typography>{currentAddress}</Typography> */}
                                 <IconButton aria-haspopup="true" color="inherit">
                                     <AccountCircle />
                                 </IconButton>
@@ -394,13 +422,16 @@ class ShellComponent extends React.Component<IShellComponentProps> {
 
 export const StyledShellComponent = withStyles(styles, {withTheme: true})(ShellComponent);
 
-// eslint-disable-next-line
-const mapStateToProps = ({}: RootState) => ({
+const mapStateToProps = ({ethereumAccount}: RootState) => ({
     // auth
+    ethereumAccount
 });
 
-const mapDispatchToProps = (_dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
     // logout: () => dispatch(logoutAction())
+    updateAccount: (address: string) => dispatch(updateAccountAction(address)),
+    updateIpfs: (ipfsDigest: string) => dispatch(updateIpfsAction(ipfsDigest)),
+    logoutAccount: () => dispatch(logoutAccountAction())
 });
 
 const Shell = connect(

@@ -39,6 +39,7 @@ export const addToIpfs = async (title: String, text: String) => {
     const directoryFile = await filesAdded.find((f: any) => f.path === 'tmp');
     const directoryBuffer = await node.cat(`/ipfs/${directoryFile.hash}/myfile.txt`);
     console.log('[ ipfs retrieve ] Content from dir:', directoryBuffer.toString());
+    return filesAdded[1].hash;
 };
 
 export const initializeIpfs = () => {
@@ -58,13 +59,13 @@ export const initializeIpfs = () => {
                     if (err) {
                         throw err;
                     }
-                    console.log(' [ initialize ipfs ]  The node identity is: ', res);
-                    node.config.get((err: any, config: any) => {
-                        if (err) {
-                            throw err;
-                        }
-                        console.log(' [ initialize ipfs ] The node config is: ', config);
-                    });
+                    console.log(' [ initialize ipfs ]  The node identity is: ', res.id);
+                    // node.config.get((err: any, config: any) => {
+                    //     if (err) {
+                    //         throw err;
+                    //     }
+                    //     console.log(' [ initialize ipfs ] The node config is: ', config);
+                    // });
                 });
             }
         );

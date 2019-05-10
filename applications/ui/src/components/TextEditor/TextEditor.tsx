@@ -23,6 +23,7 @@ import {
     saveContentEditor as saveContentEditorAction
 } from '../../store/content/content.actions';
 import {initializeIpfs, addToIpfs} from '../../libs/ipfs';
+import {writeToSmartContract} from '../../libs/web3';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -77,7 +78,7 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
     });
 
     componentDidMount = () => {
-        console.log('componentDidMount');
+        console.log(' [ proceed to initialize ipfs ] ');
         initializeIpfs();
     };
 
@@ -87,7 +88,9 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
         console.log('>>> onSubmit', values);
         saveEditor(values as any);
         console.log('after save', store.getState());
-        await addToIpfs(values.title, values.text);
+        const ipfsDigest = await addToIpfs(values.title, values.text);
+        console.log('>>> Got the digest ', ipfsDigest);
+        await writeToSmartContract(ipfsDigest);
     };
 
     handleClickOpen = () => {
