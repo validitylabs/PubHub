@@ -34,7 +34,7 @@ export class IpfsService {
         // this.node.on('ready', () => {
         this.node
             .id()
-            .catch((error: any) => this.logger.log(` [ipfs module] has an error ${error}`))
+            .catch((error: any) => this.logger.error(` [ipfs module] has an error ${error}`))
             .then((id: any) => {
                 this.logger.log(` [ipfs module] the id is ${id}.`);
             })
