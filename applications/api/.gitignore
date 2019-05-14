@@ -4,3 +4,6 @@
 # dev modules
 /src/modules/mail
 /src/modules/database
+
+# ipfs modules
+/ipfs-*

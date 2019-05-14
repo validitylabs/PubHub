@@ -4,6 +4,7 @@ import {RequestLoggerMiddleware} from './middleware/request-logger.middleware';
 // Modules
 import {CommandModule} from './modules/command';
 import {Web3Module} from './modules/web3/web3.module';
+import {IpfsModule} from './modules/ipfs/ipfs.module';
 import {DatabaseModule} from './modules/database/database.module';
 import {JwkModule} from './modules/jwk';
 import {StatusModule} from './modules/status/status.module';
@@ -15,6 +16,7 @@ import {StatusModule} from './modules/status/status.module';
         // AuthModule,
         CommandModule,
         Web3Module,
+        IpfsModule,
         DatabaseModule,
         JwkModule,
         StatusModule
