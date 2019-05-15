@@ -5,8 +5,14 @@ let IpfsClient = require('ipfs-http-client');
 @Injectable()
 export class IpfsService {
     private readonly logger = new Logger('IPFS');
-    private readonly node = IpfsClient('/ip4/127.0.0.1/tcp/5001');
-    // private readonly node = IpfsClient({host: '127.0.0.1', port: '5001', protocol: 'http'});
+    // private readonly node = IpfsClient('/ip4/127.0.0.1/tcp/5001');
+    // private readonly node = IpfsClient({host: 'localhost', port: '5001', protocol: 'http'});
+    // From docker containers' POV, the host machine's "localhost" is not the same as the "localhost" of the container.
+    // Therefore, we need to get the ip address of the docker host machine at docker-compose's POV
+    // The way is to do in the CLI: >> docker inspect <docker-container-id> | grep Gateway
+    // And put the gateway's IP address inside the host info for the API...
+    // This IP address (172.20.0.1) won't be changed untill the command >> docker-compose down runs and restarts the docker-compose again
+    private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
     // private readonly node = new Ipfs({
     //     repo: 'ipfs-' + String(Math.random() + Date.now()),
     //     config: {
@@ -36,7 +42,7 @@ export class IpfsService {
             .id()
             .catch((error: any) => this.logger.error(` [ipfs module] has an error ${error}`))
             .then((id: any) => {
-                this.logger.log(` [ipfs module] the id is ${id}.`);
+                this.logger.log(` [ipfs module] the id is ${id.id}.`);
             })
             .catch(() => '[ipfs module] obligatory catch');
         // });
@@ -53,7 +59,7 @@ export class IpfsService {
 
     async getIpfsOnlineStatus(): Promise<string> {
         const id = await this.node.id();
-        return `[ ipfs module ] id is ${id}`;
+        return `[ ipfs module ] id is ${id.id}`;
         // return ` [ initialize ipfs ] Online status:  ${this.node.isOnline() ? 'online' : 'offline'}`;
     }
 }

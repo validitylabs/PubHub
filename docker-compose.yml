@@ -31,12 +31,27 @@ services:
       - /srv/packages/utils/node_modules
     depends_on:
       - api-db
+      - ipfs
     networks:
       - frontend
       - backend
     ports:
       - "3000:3000"
       - "9229:9229"
+      # - "5001:5001" # This setting is experimental. For trying out the connection between the container and docker host
+
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    volumes:
+      - "/tmp/ipfs-docker-staging:/export"
+      - "/tmp/ipfs-docker-data:/data/ipfs"
+    networks:
+      - backend
+    ports:
+      - "5001:5001"
+      - "4001:4001"
+      - "8080:8080"
+
   api-db:
     image: mariadb:10.3
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
