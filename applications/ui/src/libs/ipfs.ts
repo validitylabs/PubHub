@@ -54,23 +54,28 @@ export const initializeIpfs = () => {
             }
             console.log(' [ initialize ipfs ]  The node identity is: ', res.id);
         });
-        // try {
-        //     node.swarm.connect(
-        //         '/ip4/127.0.0.1/tcp/4003/ws/ipfs/QmVJQDXoLqfBpBwBVmi96zbuD3eQazQf274EEwLB6BNWaZ'
-        //         // // This information is in align with the daemon. Connecting through websocket by the hash. Config could be found and set at "~/.ipfs/config"
-        //         // , (err: any, res: any) => {
-        //         //     if (err) {
-        //         //         console.error(' [initialize ipfs ] Websocket connection tempt failed', err);
-        //         //         throw err;
-        //         //     }
-        //         //     // if no err is present, connection is now open
-        //         //     console.log(' [ initialize ipfs ] Websocket connection is added', res);
-        //         // }
-        //     );
-        // } catch (e) {
-        //     console.error(' [ initialize ipfs try] ', e);
-        //     throw e;
-        // }
+        try {
+            node.swarm.connect(
+                // // trying to connect to an ipfs daemon running on localhost
+                // '/ip4/127.0.0.1/tcp/4003/ws/ipfs/QmVJQDXoLqfBpBwBVmi96zbuD3eQazQf274EEwLB6BNWaZ'
+                // trying to connect to the websocket of backend ipfs daemon
+                // '/ip4/172.20.0.3/tcp/8081/wss/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
+                // or 127.0.0.1
+                '/ip4/127.0.0.1/tcp/8081/ws/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
+                // // This information is in align with the daemon. Connecting through websocket by the hash. Config could be found and set at "~/.ipfs/config"
+                // , (err: any, res: any) => {
+                //     if (err) {
+                //         console.error(' [initialize ipfs ] Websocket connection tempt failed', err);
+                //         throw err;
+                //     }
+                //     // if no err is present, connection is now open
+                //     console.log(' [ initialize ipfs ] Websocket connection is added', res);
+                // }
+            );
+        } catch (e) {
+            console.error(' [ initialize ipfs try] ', e);
+            throw e;
+        }
     });
     node.once('error', (error: any) => {
         console.error('Something went terribly wrong!', error);

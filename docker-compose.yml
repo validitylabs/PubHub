@@ -51,6 +51,7 @@ services:
       - "5001:5001"
       - "4001:4001"
       - "8080:8080"
+      - "8081:8081" # suppose to be the port for webs
 
   api-db:
     image: mariadb:10.3
