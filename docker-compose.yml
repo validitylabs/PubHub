@@ -66,6 +66,23 @@ services:
     ports:
       - "3306:3306"
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
+    networks:
+      - backend
+    environment:
+      # - http.host=0.0.0.0
+      # - transport.host=127.0.0.1
+      # - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - discovery.type=single-node
+    volumes:
+      - "/tmp/elastic-docker-data:/usr/share/elasticsearch/data"
+    ports:
+      - "9200:9200"
+    logging:
+      options:
+        max-size: "500k"
+        max-file: "10"
   ##
   # UI
   ui:

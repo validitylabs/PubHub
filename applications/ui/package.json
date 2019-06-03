@@ -32,6 +32,7 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.2",
+    "to-fast-properties": "^2.0.0",
     "typeface-roboto": "^0.0.54",
     "typesafe-actions": "^2.0.4",
     "typescript": "3.2.2",

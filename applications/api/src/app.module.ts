@@ -8,6 +8,7 @@ import {IpfsModule} from './modules/ipfs/ipfs.module';
 import {DatabaseModule} from './modules/database/database.module';
 import {JwkModule} from './modules/jwk';
 import {StatusModule} from './modules/status/status.module';
+import {SearchModule} from './modules/elastic/elastic.module';
 
 // Applications
 
@@ -19,7 +20,8 @@ import {StatusModule} from './modules/status/status.module';
         IpfsModule,
         DatabaseModule,
         JwkModule,
-        StatusModule
+        StatusModule,
+        SearchModule
     ]
 })
 export class AppModule implements NestModule {
