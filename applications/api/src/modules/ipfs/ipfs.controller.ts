@@ -13,6 +13,12 @@ export class IpfsController {
         return this.ipfsService.writeToIpfs(writeFileDto);
     }
 
+    @Post('elastic')
+    async saveToElastic(@Body() writeFileDto: WriteFileDto) {
+        console.log(writeFileDto);
+        return this.ipfsService.saveToElastic(writeFileDto);
+    }
+
     @Get()
     async getIpfsOnlineStatus(): Promise<string> {
         return this.ipfsService.getIpfsOnlineStatus();

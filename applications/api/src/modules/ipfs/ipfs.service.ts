@@ -1,7 +1,7 @@
 import {Logger, Injectable} from '@nestjs/common';
 import {WriteFileDto} from './dto/write-file.dto';
 // TODO: Add search service to ipfs service?
-// import {SearchService} from '../elastic/elastic.service';
+import {SearchService} from '../elastic/elastic.service';
 // import {IAddResult} from './interfaces/file.interface';
 
 // tslint:disable-next-line
@@ -15,11 +15,12 @@ export class IpfsService {
     // The way is to do in the CLI: >> docker inspect <docker-container-id> | grep Gateway
     // And put the gateway's IP address inside the host info for the API...
     // This IP address (172.20.0.1) won't be changed untill the command >> docker-compose down runs and restarts the docker-compose again
-    private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
+    // e.g. private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
+    private readonly node = IpfsClient({host: '172.18.0.1', port: '5001', protocol: 'http'});
 
     //TODO: passing searchService as param?
-    // constructor(private readonly searchService: SearchService) {
-    constructor() {
+    constructor(private readonly searchService: SearchService) {
+        // constructor() {
         this.logger.log(` ipfs module is logging`);
         this.node
             .id()
@@ -42,19 +43,22 @@ export class IpfsService {
     }
 
     // tslint:disable-next-line: jsdoc-format
-    /** TODO:
+    // TODO:
+    /**
      * @dev Called by an HTTP request, which should fetch the content from backend node
      * (or directly passing through the dto) and dump it to elastic search.
      */
-    // // async writeToIpfs(writeFileDto: WriteFileDto): Promise<IAddResult> {
-    // async saveToElastic(writeFileDto: WriteFileDto) {
-    //     // the line below should not be executed as it creates a duplicate of the same file craeted by the js-ipfs on the client side
-    //     const flattenMsg = `We are adding this title ${writeFileDto.title} and ${
-    //         writeFileDto.content
-    //     } as content to the IPFS, which is running insider a container.`;
-    //     // instead, we need to create file in elastic search
-    //     await this.searchService.create();
-    // }
+    // async writeToIpfs(writeFileDto: WriteFileDto): Promise<IAddResult> {
+    async saveToElastic(writeFileDto: WriteFileDto) {
+        // the line below should not be executed as it creates a duplicate of the same file craeted by the js-ipfs on the client side
+        // const flattenMsg = `We are adding this title ${writeFileDto.title} and ${
+        //     writeFileDto.content
+        // } as content to the IPFS, which is running insider a container.`;
+        const newObj = {title: writeFileDto.title, content: writeFileDto.content, user: String(`0xETH${Math.random()}`)};
+        console.log('Adding a new object ', newObj);
+        // instead, we need to create file in elastic search
+        return this.searchService.insertWork(newObj);
+    }
 
     /**
      * @dev Called by an HTTP request and write message to the backend ipfs node

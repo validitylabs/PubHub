@@ -71,11 +71,16 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
     networks:
       - backend
+    depends_on:
+      - api-db
     environment:
-      # - http.host=0.0.0.0
-      # - transport.host=127.0.0.1
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
       # - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      # - ES_JAVA_OPTS: "-Xms750m -Xmx750m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - "/tmp/elastic-docker-data:/usr/share/elasticsearch/data"
     ports:

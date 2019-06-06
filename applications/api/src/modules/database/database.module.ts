@@ -17,7 +17,7 @@ import {ConfigurationService} from '../configuration/configuration.service';
                 type: 'mariadb' as any,
                 charset: 'utf8mb4',
                 host: configurationService.get('DB_HOST'),
-                port: configurationService.get('DB_PORT'),
+                port: parseFloat(configurationService.get('DB_PORT')),
                 database: configurationService.get('DB_NAME'),
                 username: configurationService.get('DB_USER'),
                 password: configurationService.get('DB_PASSWORD'),

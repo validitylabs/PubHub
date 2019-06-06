@@ -5,6 +5,8 @@
     "prettier": true,
     "indent": [true, "spaces", 4],
     "no-unnecessary-class": false,
-    "comment-format": false
+    "comment-format": false,
+    "no-constant-condition": false,
+    "no-with-statement": false
   }
 }

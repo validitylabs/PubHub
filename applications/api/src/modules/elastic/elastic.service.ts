@@ -1,6 +1,6 @@
 import {Logger, Injectable, HttpException} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
-import {WriteFileDto} from '../ipfs/dto/write-file.dto';
+import {SaveWorkDto} from './dto/save-work.dto';
 
 @Injectable()
 export class SearchService {
@@ -18,33 +18,64 @@ export class SearchService {
             if (error) {
                 console.trace('elasticsearch cluster is down!');
             } else {
-                console.log('All is well');
+                console.log('All good');
             }
+        }
+    }
+
+    /**
+     * @dev bulk insert title and content
+     * @notice inserting multiple fields at the same time. Needs to be careful on the indice creation.
+     */
+    async insertWork(work: SaveWorkDto) {
+        // async dumpToSearch(writeFileDto: SaveWorkDto) {
+        //     return this.elasticsearchService.create({
+        //         index: 'work',
+        //         type: 'metadata',
+        //         body: {
+        //             authorAccount: String(`0xETH${Math.random()}`),
+        //             title: writeFileDto.title,
+        //             content: writeFileDto.content
+        //         }
+        //     });
+        // }
+        try {
+            return this.elasticsearchService.index({
+                index: 'pubhub',
+                type: 'works',
+                body: {
+                    title: work.title,
+                    content: work.content,
+                    user: work.user
+                }
+            });
+        } catch (error) {
+            this.logger.error('Failed to index document', error);
+            throw new HttpException('Failed to index document.', 500);
         }
     }
 
     /**
      * @dev testing service: insert
      */
-    async bulkInsert(abilities: any[]) {
+    async bulkInsertWorks(works: SaveWorkDto[]) {
         const bulk = [];
-        abilities.forEach((ability) => {
+        works.forEach((work) => {
             bulk.push({
-                index: {_index: 'pokemons', _type: 'abilities'}
+                index: {_index: 'pubhub', _type: 'works'}
             });
-            bulk.push(ability);
+            bulk.push({
+                title: work.title,
+                content: work.content,
+                user: work.user
+            });
         });
-        this.elasticsearchService.bulk({body: bulk, index: 'pokemons', type: 'abilities'}).subscribe(
-            (res) => {
-                return {
-                    status: 'success',
-                    data: res
-                };
-            },
-            (err) => {
-                throw new HttpException(err, 500);
-            }
-        );
+        try {
+            return this.elasticsearchService.bulk({body: bulk, index: 'pubhub', type: 'works'});
+        } catch (error) {
+            this.logger.error('Failed to index document');
+            throw new HttpException(error, 500);
+        }
     }
 
     /**
@@ -56,62 +87,19 @@ export class SearchService {
             size: 200,
             from: 0,
             query: {
-                match: {
-                    url: q
+                multi_match: {
+                    query: q,
+                    fields: ['title', 'content']
                 }
             }
         };
-        return this.elasticsearchService.search({index: 'pokemons', body, q}).subscribe(
-            (res) => res.hits.hits,
-            (err) => {
-                throw new HttpException(err, 500);
-            }
-        );
+        try {
+            this.elasticsearchService.search({index: 'pubhub', body, q}).subscribe((value) => {
+                console.log(value);
+            });
+        } catch (error) {
+            this.logger.error('Failed to find document', error);
+            throw new HttpException('Failed to find document.', 500);
+        }
     }
-
-    // TODO: update the dto and complete the write and read methods
-    async dumpToSearch(writeFileDto: WriteFileDto) {
-        return this.elasticsearchService.create({
-            index: 'work',
-            type: 'metadata',
-            body: {
-                authorAccount: String(`0xETH${Math.random()}`),
-                title: writeFileDto.title,
-                content: writeFileDto.content
-            }
-        });
-    }
-
-    // async bulkInsert(abilities: any[]) {
-    //     const bulk = [];
-    //     abilities.forEach(ability => {
-    //         bulk.push({
-    //             index: {_index: 'pokemons', _type: 'abilities'}
-    //         });
-    //         bulk.push(ability);
-    //     });
-    //     return await this.esclient.bulk({
-    //         body: bulk,
-    //         index: 'pokemons',
-    //         type: 'abilities'
-    //     })
-    //     .then(res => ({status: 'success', data: res}))
-    //     .catch(err => { throw new HttpException(err, 500); });
-    // }
-
-    // // searches the 'pokemons' index for matching documents
-    // async searchIndex(q: string) {
-    //     const body = {
-    //         size: 200,
-    //         from: 0,
-    //         query: {
-    //             match: {
-    //                 url: q,
-    //             },
-    //         },
-    //     };
-    //     return await this.esclient.search({index: 'pokemons', body, q})
-    //         .then(res => res.hits.hits)
-    //         .catch(err => { throw new HttpException(err, 500); });
-    // }
 }
