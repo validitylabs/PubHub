@@ -1,5 +1,5 @@
 import {Reducer, AnyAction} from 'redux';
-import {IContent, IContentEditor, ContentActionTypes} from './content.types';
+import {IContent, IContentEditor, ContentActionTypes, AlertActionTypes} from './content.types';
 
 export const initialContentState: IContent = {
     id: '0',
@@ -72,6 +72,7 @@ export const contentReducer: Reducer<IContent> = (state = initialContentState, a
 const initialState: IContentEditor = {
     display: false,
     modifiable: false,
+    alertOn: false,
     content: initialContentState
 };
 
@@ -79,10 +80,12 @@ const display = (state = false, action: AnyAction) => {
     switch (action.type) {
         case ContentActionTypes.READ_CONTENT:
             return true;
+        case ContentActionTypes.WRITE_CONTENT:
+            return true;
         case ContentActionTypes.CANCEL_CONTENT:
             return false;
-        case ContentActionTypes.SAVE_CONTENT:
-            return false;
+        // case ContentActionTypes.SAVE_CONTENT:
+        //     return false;
         default:
             return state;
     }
@@ -110,8 +113,20 @@ const content = (state: IContent = initialContentState, action: AnyAction) => {
     }
 };
 
+const alertOn = (state = false, action: AnyAction) => {
+    switch (action.type) {
+        case AlertActionTypes.SHOW_ALERT:
+            return true;
+        case AlertActionTypes.HIDE_ALERT:
+            return false;
+        default:
+            return state;
+    }
+};
+
 export const contentEditorReducer: Reducer<IContentEditor> = (state = initialState, action: AnyAction) => ({
     display: display(state.display, action),
     modifiable: modifiable(state.modifiable, action),
+    alertOn: alertOn(state.alertOn, action),
     content: content(state.content, action)
 });

@@ -4,11 +4,18 @@ import {connect} from 'react-redux';
 import {store, RootState} from '../../store';
 import {Formik, Form, Field, FormikProps, FormikValues} from 'formik';
 import * as Yup from 'yup';
+import {axios} from '../../axios';
+import config from '../../config';
 import {TextField} from '../../components/TextField';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+// ---
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+// ---
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,11 +23,15 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import {IContent} from '../../store/content/content.types';
+import {IElasticreg} from '../../store/elasticreg/elasticreg.types';
 import {initialContentState as defaultContentState} from '../../store/content/content.reducer';
 import {
-    readContentEditor as readContentEditorAction,
+    // readContentEditor as readContentEditorAction,
     cancelContentEditor as cancelContentEditorAction,
-    saveContentEditor as saveContentEditorAction
+    saveContentEditor as saveContentEditorAction,
+    writeContentEditor as writeContentEditorAction, // fallback of a failed tx
+    showAlert as showAlertAction,
+    hideAlert as hideAlertAction
 } from '../../store/content/content.actions';
 import {initializeIpfs, addToIpfs} from '../../libs/ipfs';
 import {writeToSmartContract} from '../../libs/web3';
@@ -48,11 +59,16 @@ const styles = (theme: Theme) =>
 
 interface IContentDisplayProps {
     open: boolean;
+    alertOn: boolean;
+    modifiable: boolean;
     lastUpdateTime: Date;
     content: IContent;
     displayEditor(): void;
     closeEditor(): void;
     saveEditor(newContentState: IContent): void;
+    resumeEditor(newContentState: IContent): void;
+    displayAlert(): void;
+    closeAlert(): void;
 }
 
 export interface ITextEditorComponentProps extends IContentDisplayProps {
@@ -83,14 +99,61 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
     };
 
     onSubmit = async (values: FormikValues) => {
-        const {saveEditor} = this.props;
-        console.log('before save', store.getState());
+        const {saveEditor, closeEditor, resumeEditor, displayAlert, closeAlert} = this.props;
+        displayAlert();
+        console.log('before clicking save', store.getState());
         console.log('>>> onSubmit', values);
         saveEditor(values as any);
-        console.log('after save', store.getState());
+        console.log('after clicking save', store.getState());
         const ipfsDigest = await addToIpfs(values.title, values.text);
         console.log('>>> Got the digest ', ipfsDigest);
-        await writeToSmartContract(ipfsDigest);
+        // // if not axios method has been invoked,
+        // // then only await for the response of the smart contract
+        try {
+            // Step 1: Write to smart contract and get the caller as the returned value.
+            const account = await writeToSmartContract(ipfsDigest);
+            console.log(` logging received account info ${account}`);
+            closeAlert();
+            if (account === '') {
+                console.error(`>>> cannot proceed without smart contract registry.`);
+                resumeEditor(values as any);
+            } else {
+                console.log('>>> Good');
+                closeEditor();
+                // Otherwise, invoke API call right afterwards.
+                // The end point is https://localhost:3000/elastic/save
+                // It saves the cretor address + ipfs digest + raw data to elastic search
+                // A potential optimization: to parrallize the check:
+                // 1. caller address and ipfs digest pair
+                // 2. ipfs digest and {title, content} pair
+                console.log(`>>> api query endpoint is ${config.APP_API_ENDPOINT}/elastic/save`);
+                console.log(`>>> value to be saved TITLE ${values.title} CONTENT ${values.text} USER ${account} DIGEST ${ipfsDigest}`);
+                try {
+                    // Step 2: Verify with IPFS
+                    // Step 3: Save to elastic
+                    const response = await axios.post<IElasticreg>(
+                        `${config.APP_API_ENDPOINT}/elastic/save`,
+                        {
+                            title: values.title,
+                            content: values.text,
+                            user: account,
+                            digest: ipfsDigest
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json; charset=utf-8'
+                                // Authorization: `Bearer ${authState.token}`
+                            }
+                        }
+                    );
+                    console.log('>>> submited!', response.data);
+                } catch (error) {
+                    console.log('>>> submit failed!', error);
+                }
+            }
+        } catch (error) {
+            console.error(`>>> Bad ${error}`);
+        }
     };
 
     handleClickOpen = () => {
@@ -106,7 +169,7 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
     };
 
     renderForm = (props: FormikProps<IContent>) => {
-        const {classes} = this.props;
+        const {classes, modifiable} = this.props;
         return (
             <Form autoComplete="off">
                 <AppBar className={classes.appBar}>
@@ -117,8 +180,11 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
                         <Typography variant="h6" color="inherit" className={classes.flex}>
                             View and/or edit file
                         </Typography>
-                        <Button type="submit" color="inherit" disabled={props.isSubmitting}>
+                        {/* <Button type="submit" color="inherit" disabled={props.isSubmitting}>
                             {props.isSubmitting ? 'savinging...' : 'Save'}
+                        </Button> */}
+                        <Button type="submit" color="inherit" disabled={!modifiable}>
+                            {modifiable ? 'Save' : 'Savinging...'}
                         </Button>
                     </Toolbar>
                 </AppBar>
@@ -158,7 +224,7 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
     };
 
     render() {
-        const {open} = this.props;
+        const {open, alertOn, closeAlert} = this.props;
         return (
             <React.Fragment>
                 <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
@@ -170,6 +236,24 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
                         render={this.renderForm}
                     />
                 </Dialog>
+                <Dialog
+                    open={alertOn}
+                    onClose={closeAlert}
+                    disableBackdropClick
+                    disableEscapeKeyDown
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Please don't close the browser/window"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Please remain this browser tab open until your transaction is confirmed. Otherwise, there's risk of losing your entry. This step may
+                            take up to 10 minutes. Step 1: Save content to IPFS (~instantly). Step 2: Write the digest to Ethereum network (Seconds to ~1
+                            minute). Step 3: Perform sanity check by pinning the content from IPFS network and compare the metadata with the data registered in
+                            the smart contract (3~5 minutes). Step 4: Save the data to a centralized indexing service.
+                        </DialogContentText>
+                    </DialogContent>
+                </Dialog>
             </React.Fragment>
         );
     }
@@ -179,15 +263,20 @@ const styledTextEditorComponent = withStyles(styles)(TextEditorComponent);
 
 const mapStateToProps = ({contentEditor, content}: RootState) => ({
     open: contentEditor.display,
+    alertOn: contentEditor.alertOn,
+    modifiable: contentEditor.modifiable,
     lastUpdateTime: contentEditor.content.updatedAt,
     initialContent: contentEditor.content,
     content
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    displayEditor: () => dispatch(readContentEditorAction(defaultContentState)),
+    displayEditor: () => dispatch(writeContentEditorAction(defaultContentState)),
     closeEditor: () => dispatch(cancelContentEditorAction()),
-    saveEditor: (newContentState: IContent) => dispatch(saveContentEditorAction(newContentState))
+    saveEditor: (newContentState: IContent) => dispatch(saveContentEditorAction(newContentState)),
+    resumeEditor: (newContentState: IContent) => dispatch(writeContentEditorAction(newContentState)),
+    displayAlert: () => dispatch(showAlertAction()),
+    closeAlert: () => dispatch(hideAlertAction())
 });
 
 const TextEditor = connect(

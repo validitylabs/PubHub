@@ -21,6 +21,11 @@ export enum ContentActionTypes {
     SAVE_CONTENT = 'SAVE_CONTENT'
 }
 
+export enum AlertActionTypes {
+    SHOW_ALERT = 'SHOW_ALERT',
+    HIDE_ALERT = 'HIDE_ALERT'
+}
+
 // export enum ContentModifyTypes {
 //     MODIFIABLE_CONTENT = 'MODIFIABLE_CONTENT',
 //     READONLY_CONTENT = 'READONLY_CONTENT'
@@ -29,6 +34,7 @@ export enum ContentActionTypes {
 export interface IContentEditor {
     display: boolean;
     modifiable: boolean;
+    alertOn: boolean;
     content: IContent;
 }
 

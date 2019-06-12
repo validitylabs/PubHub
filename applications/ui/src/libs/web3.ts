@@ -116,14 +116,27 @@ export const isInstalled = async () => {
     }
 };
 
-export const writeToSmartContract = (ipfsDigest: string) => {
+export const writeToSmartContract = async (ipfsDigest: string): Promise<string> => {
     console.log(` [ web3 writeToSmartContract ] ${currentAccount} tries to write ${ipfsDigest} on chain. Of length ${ipfsDigest.length}`);
     // optimize the data stroage by checking the length and slicing the first two bytes
     const digest = ipfsDigest.length === 46 && ipfsDigest.startsWith('Qm') ? ipfsDigest.slice(2) : ipfsDigest;
-    theContract.methods
-        .writeToIpfs(`"${digest}"`)
-        .send({from: web3.utils.toChecksumAddress(currentAccount)})
-        .on('transactionHash', (hash: any) => {
-            console.log(' [ web3 called function ] TxHash ', hash);
-        });
+    // 112
+    try {
+        const receipt = await theContract.methods.writeToIpfs(`"${digest}"`).send({from: web3.utils.toChecksumAddress(currentAccount)});
+        console.log(` [ web3 writeToSmartContract ] received receipt`);
+        return receipt.from;
+    } catch (error) {
+        console.error(`not this one ${error}`);
+        return '';
+    }
+    // // 113
+    // const account = web3.utils.toChecksumAddress(currentAccount);
+    // return theContract.methods.writeToIpfs(`"${digest}"`).send({from: account}, (error: any, transactionHash: any) => {
+    //     if (error) {
+    //         console.error('[ web3 writeToSmartContract ]');
+    //         return '';
+    //     }
+    //     console.log(` [ web3 writeToSmartContract ] received txHash ${transactionHash} and now returning ${account}`);
+    //     return account;
+    // });
 };

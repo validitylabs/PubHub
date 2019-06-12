@@ -8,3 +8,28 @@ export interface IWork {
 export interface IWorks {
     [key: number]: IWork;
 }
+
+export interface IWorksState {
+    isFetching: boolean;
+    byId: IWorks;
+}
+
+export enum SearchActionTypes {
+    SEARCH = '@@search/GET'
+}
+
+export interface IReturnedWork {
+    title: string;
+    content: string;
+    user: string;
+    digest: string;
+}
+
+export interface IReturnedWorks {
+    [key: number]: IReturnedWork;
+}
+
+export interface IReturnedWorksState {
+    isFetching: boolean;
+    byId: IReturnedWorks;
+}

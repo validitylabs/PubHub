@@ -1,9 +1,12 @@
-import React, {FunctionComponent} from 'react';
+import React from 'react';
 import InputBase from '@material-ui/core/InputBase';
 import {fade} from '@material-ui/core/styles/colorManipulator';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import {axios} from '../../../axios';
+import config from '../../../config';
+import {IReturnedWork} from '../../../store/work/work.types';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -60,27 +63,51 @@ export interface ISearchFieldProps {
     };
 }
 
-const SearchFieldComponent: FunctionComponent<ISearchFieldProps> = (props) => {
-    const {classes} = props;
-    return (
-        <React.Fragment>
-            <Grid container className={classes.container}>
-                <Grid container className={classes.search}>
-                    <Grid item className={classes.searchIcon}>
-                        <SearchIcon />
+class SearchFieldComponent extends React.Component<ISearchFieldProps> {
+    handleRequestSearch = async (e: any) => {
+        if (e.charCode === 13 || e.key === 'Enter') {
+            // write your functionality here
+            console.log('searching for:', e.target.value);
+            try {
+                // Step 2: Verify with IPFS
+                // Step 3: Save to elastic
+                const response = await axios.get<IReturnedWork[]>(`${config.APP_API_ENDPOINT}/elastic/search?q=${e.target.value}`, {
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                        // Authorization: `Bearer ${authState.token}`
+                    }
+                });
+                console.log('>>> submited!', response.data);
+                // however no response.data returned. I could only observer the result in elasticsearch docker log...
+            } catch (error) {
+                console.log('>>> submit failed!', error);
+            }
+        }
+    };
+
+    render() {
+        const {classes} = this.props;
+        return (
+            <React.Fragment>
+                <Grid container className={classes.container}>
+                    <Grid container className={classes.search}>
+                        <Grid item className={classes.searchIcon}>
+                            <SearchIcon />
+                        </Grid>
+                        <InputBase
+                            placeholder="Please enter keywords or title for searching…"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput
+                            }}
+                            onKeyPress={this.handleRequestSearch}
+                        />
                     </Grid>
-                    <InputBase
-                        placeholder="Please enter keywords or title for searching…"
-                        classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput
-                        }}
-                    />
                 </Grid>
-            </Grid>
-        </React.Fragment>
-    );
-};
+            </React.Fragment>
+        );
+    }
+}
 
 const styledSearchFieldComponent = withStyles(styles)(SearchFieldComponent);
 

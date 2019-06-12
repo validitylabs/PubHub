@@ -1,7 +1,6 @@
 import {Logger, Injectable} from '@nestjs/common';
 import {WriteFileDto} from './dto/write-file.dto';
-// TODO: Add search service to ipfs service?
-import {SearchService} from '../elastic/elastic.service';
+// import {SearchService} from '../elastic/elastic.service';
 // import {IAddResult} from './interfaces/file.interface';
 
 // tslint:disable-next-line
@@ -17,10 +16,8 @@ export class IpfsService {
     // This IP address (172.20.0.1) won't be changed untill the command >> docker-compose down runs and restarts the docker-compose again
     // e.g. private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
     private readonly node = IpfsClient({host: '172.18.0.1', port: '5001', protocol: 'http'});
-
-    //TODO: passing searchService as param?
-    constructor(private readonly searchService: SearchService) {
-        // constructor() {
+    // constructor(private readonly searchService: SearchService) {
+    constructor() {
         this.logger.log(` ipfs module is logging`);
         this.node
             .id()
@@ -42,24 +39,6 @@ export class IpfsService {
         // return ` [ initialize ipfs ] Online status:  ${this.node.isOnline() ? 'online' : 'offline'}`;
     }
 
-    // tslint:disable-next-line: jsdoc-format
-    // TODO:
-    /**
-     * @dev Called by an HTTP request, which should fetch the content from backend node
-     * (or directly passing through the dto) and dump it to elastic search.
-     */
-    // async writeToIpfs(writeFileDto: WriteFileDto): Promise<IAddResult> {
-    async saveToElastic(writeFileDto: WriteFileDto) {
-        // the line below should not be executed as it creates a duplicate of the same file craeted by the js-ipfs on the client side
-        // const flattenMsg = `We are adding this title ${writeFileDto.title} and ${
-        //     writeFileDto.content
-        // } as content to the IPFS, which is running insider a container.`;
-        const newObj = {title: writeFileDto.title, content: writeFileDto.content, user: String(`0xETH${Math.random()}`)};
-        console.log('Adding a new object ', newObj);
-        // instead, we need to create file in elastic search
-        return this.searchService.insertWork(newObj);
-    }
-
     /**
      * @dev Called by an HTTP request and write message to the backend ipfs node
      * @notice Not a function used in production (out of scope) because this function
@@ -67,15 +46,19 @@ export class IpfsService {
      * Instead, we need to create file in elastic search
      */
     async writeToIpfs(writeFileDto: WriteFileDto) {
-        const flattenMsg = `We are adding this title ${writeFileDto.title} and ${
-            writeFileDto.content
-        } as content to the IPFS, which is running insider a container.`;
+        const flattenMsg = JSON.stringify(writeFileDto);
+        console.log('the flatted msg is, ', flattenMsg);
+        // const flattenMsg = `We are adding this title ${writeFileDto.title} and ${
+        //     writeFileDto.content
+        // } as content to the IPFS, which is running insider a container.`;
         return this.node.add(Buffer.from(flattenMsg));
     }
 
     async catAndPinFromIpfs(id: string): Promise<string> {
+        this.logger.log(` cat the file`);
         const original = await this.node.cat(id);
         // need to add pin
+        this.logger.log(` pin the file to current server`);
         await this.node.pin.add(id);
         return original.toString('utf8');
         // if (Buffer.isBuffer(original)) {

@@ -6,6 +6,11 @@ import {SaveWorkDto} from './dto/save-work.dto';
 export class SearchController {
     constructor(private readonly searchService: SearchService) {}
 
+    @Post('save')
+    async getContentFromIpfs(@Body() document: SaveWorkDto) {
+        return this.searchService.getContentFromIpfs(document);
+    }
+
     @Post('create')
     async insertWork(@Body() document: SaveWorkDto) {
         return this.searchService.insertWork(document);

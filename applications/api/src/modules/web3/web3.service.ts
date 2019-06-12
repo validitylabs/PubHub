@@ -82,4 +82,10 @@ export class Web3Service {
         // tslint:disable-next-line
         return digest;
     }
+
+    async verifyAccountAndHash(userAccount: string, ipfsDigest: string): Promise<boolean> {
+        const events = await this.contract.getPastEvents('AddedToIpfs', {filter: {Account: userAccount}, fromBlock: 0, toBlock: 'latest'});
+        const mainDigest = ipfsDigest.slice(2);
+        return events.findIndex((event: any) => event.returnValues.IpfsDigest.slice(1, -1) === mainDigest) === -1 ? false : true;
+    }
 }

@@ -14,7 +14,7 @@ import searchimg from '../../images/search.jpg';
 import projectsimg from '../../images/projects.jpg';
 import referenceimg from '../../images/reference.jpg';
 import {IContent} from '../../store/content/content.types';
-import {readContentEditor as readContentEditorAction} from '../../store/content/content.actions';
+import {writeContentEditor as writeContentEditorAction} from '../../store/content/content.actions';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -229,7 +229,7 @@ const mapStateToProps = ({contentEditor}: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    displayEditor: () => dispatch(readContentEditorAction(defaultContentState))
+    displayEditor: () => dispatch(writeContentEditorAction(defaultContentState))
 });
 
 const Home = connect(

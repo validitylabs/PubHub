@@ -8,6 +8,7 @@ interface IWindow {
 const configSchema = yup.object().shape({
     APP_API_ENDPOINT: yup
         .string()
+        // eslint-disable-next-line
         .matches(/^https:\/\/.*[^\/]$/, 'Must be a valid endpoint of the following schema without a trailing slash (https://www.company.com)')
         .required()
 });

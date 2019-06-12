@@ -21,8 +21,10 @@ const options = {
 export const node = new Ipfs(options);
 
 // Add and retrive content from IPFS
-export const addToIpfs = async (title: String, text: String) => {
-    const textToBeAdded = `Going to add title ${title} and text ${text}`;
+export const addToIpfs = async (_title: String, _text: String) => {
+    // const textToBeAdded = `Going to add title ${title} and text ${text}`;
+    const textObj = {title: _title, content: _text};
+    const textToBeAdded = JSON.stringify(textObj);
     console.log(textToBeAdded);
     const files = [
         {
@@ -61,7 +63,7 @@ export const initializeIpfs = () => {
                 // trying to connect to the websocket of backend ipfs daemon
                 // '/ip4/172.20.0.3/tcp/8081/wss/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
                 // or 127.0.0.1
-                '/ip4/127.0.0.1/tcp/8081/ws/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
+                '/ip4/127.0.0.1/tcp/8081/ws/ipfs/QmQrVsqyLcggq1zsdUnLdioHR9NuwCyx2JXLvznxdT87Ff'
                 // // This information is in align with the daemon. Connecting through websocket by the hash. Config could be found and set at "~/.ipfs/config"
                 // , (err: any, res: any) => {
                 //     if (err) {
