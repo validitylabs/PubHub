@@ -15,7 +15,8 @@ export interface IWorksState {
 }
 
 export enum SearchActionTypes {
-    SEARCH = '@@search/GET'
+    SEARCH = '@@search/GET',
+    DISPLAY = '@@display/GET'
 }
 
 export interface IReturnedWork {
