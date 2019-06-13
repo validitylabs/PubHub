@@ -15,6 +15,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Divider from '@material-ui/core/Divider';
 // ---
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -248,9 +249,21 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
                             Please remain this browser tab open until your transaction is confirmed. Otherwise, there's risk of losing your entry. This step may
-                            take up to 10 minutes. Step 1: Save content to IPFS (~instantly). Step 2: Write the digest to Ethereum network (Seconds to ~1
-                            minute). Step 3: Perform sanity check by pinning the content from IPFS network and compare the metadata with the data registered in
-                            the smart contract (3~5 minutes). Step 4: Save the data to a centralized indexing service.
+                            take up to 10 minutes.
+                        </DialogContentText>
+                        <Divider />
+                        <DialogContentText id="alert-dialog-description">
+                            Step 1: Save content to IPFS (~instantly).
+                        </DialogContentText>
+                        <DialogContentText id="alert-dialog-description">
+                            Step 2: Write the digest to Ethereum network (Seconds to ~1 minute). 
+                        </DialogContentText>
+                        <DialogContentText id="alert-dialog-description">
+                            Step 3: Perform sanity check by pinning the content from IPFS network and compare the metadata with the data registered in
+                            the smart contract (3~5 minutes). 
+                        </DialogContentText>
+                        <DialogContentText id="alert-dialog-description">
+                            Step 4: Save the data to a centralized indexing service.
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>

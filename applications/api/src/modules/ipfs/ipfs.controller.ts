@@ -40,7 +40,7 @@ export class IpfsController {
     }
 
     @Get('get/:id')
-    async getFromIpfs(@Param('id') id: string): Promise<string> {
+    async getndPinFromIpfs(@Param('id') id: string): Promise<string> {
         return this.ipfsService.getFromIpfs(id);
     }
 }

@@ -4,9 +4,9 @@ import {fade} from '@material-ui/core/styles/colorManipulator';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+// import {client} from '../../../elastic';
 import {axios} from '../../../axios';
 import config from '../../../config';
-import {IReturnedWork} from '../../../store/work/work.types';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -69,16 +69,16 @@ class SearchFieldComponent extends React.Component<ISearchFieldProps> {
             // write your functionality here
             console.log('searching for:', e.target.value);
             try {
-                // Step 2: Verify with IPFS
-                // Step 3: Save to elastic
-                const response = await axios.get<IReturnedWork[]>(`${config.APP_API_ENDPOINT}/elastic/search?q=${e.target.value}`, {
+                const response = await axios.get<any>(`${config.APP_API_ENDPOINT}/elastic/search?q=${e.target.value}`, {
                     headers: {
                         'Content-Type': 'application/json; charset=utf-8'
                         // Authorization: `Bearer ${authState.token}`
                     }
                 });
-                console.log('>>> submited!', response.data);
-                // however no response.data returned. I could only observer the result in elasticsearch docker log...
+                const results = response.data[0].hits.hits.map((item: any) => {
+                    return item._source;
+                });
+                console.log('>>> results!', results);
             } catch (error) {
                 console.log('>>> submit failed!', error);
             }

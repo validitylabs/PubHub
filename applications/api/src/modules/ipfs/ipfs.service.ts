@@ -15,7 +15,7 @@ export class IpfsService {
     // And put the gateway's IP address inside the host info for the API...
     // This IP address (172.20.0.1) won't be changed untill the command >> docker-compose down runs and restarts the docker-compose again
     // e.g. private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
-    private readonly node = IpfsClient({host: '172.18.0.1', port: '5001', protocol: 'http'});
+    private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
     // constructor(private readonly searchService: SearchService) {
     constructor() {
         this.logger.log(` ipfs module is logging`);
@@ -54,23 +54,35 @@ export class IpfsService {
         return this.node.add(Buffer.from(flattenMsg));
     }
 
+    /**
+     * @dev display and pin content from IPFS
+     */
     async catAndPinFromIpfs(id: string): Promise<string> {
-        this.logger.log(` cat the file`);
-        const original = await this.node.cat(id);
+        // this.logger.log(` cat the file`);
+        // const original = await this.node.cat(id);
+        this.logger.log(` catting the file`);
+        const original = await this.node.get(id);
         // need to add pin
-        this.logger.log(` pin the file to current server`);
+        this.logger.log(` pinning the file to current server`);
         await this.node.pin.add(id);
         return original.toString('utf8');
         // if (Buffer.isBuffer(original)) {
-        //     // Registered as buffer type
-        //     // tslint:disable-next-line: no-unnecessary-else
-        // } else {
-        //     return original;
-        // }
-    }
-
-    async getFromIpfs(id: string): Promise<string> {
+            //     // Registered as buffer type
+            //     // tslint:disable-next-line: no-unnecessary-else
+            // } else {
+                //     return original;
+                // }
+            }
+            
+        /**
+         * @dev get and pin content from IPFS
+         */
+        async getndPinFromIpfs(id: string): Promise<string> {
+        this.logger.log(` getting the file`);
         const original = await this.node.get(id);
+        // need to add pin
+        this.logger.log(` pinning the file to current server`);
+        await this.node.pin.add(id);
         return Buffer.from(original[0].content).toString('utf8');
     }
 

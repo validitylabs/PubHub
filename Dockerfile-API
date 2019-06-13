@@ -2,7 +2,7 @@
 # prepare build environment
 FROM node:dubnium-alpine as builder-base
 
-ENV YARN_VERSION 1.10.1
+ENV YARN_VERSION 1.16.0
 ENV YARN_DIR /opt/yarn
 
 RUN apk --no-cache add git python make g++

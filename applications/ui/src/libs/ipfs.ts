@@ -54,6 +54,7 @@ export const initializeIpfs = () => {
                 console.error(' [initialize ipfs] id query failed', err);
                 throw err;
             }
+            console.log(' [ initialize ipfs ] Online status: ', node.isOnline() ? 'online' : 'offline');
             console.log(' [ initialize ipfs ]  The node identity is: ', res.id);
         });
         try {
@@ -63,7 +64,7 @@ export const initializeIpfs = () => {
                 // trying to connect to the websocket of backend ipfs daemon
                 // '/ip4/172.20.0.3/tcp/8081/wss/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
                 // or 127.0.0.1
-                '/ip4/127.0.0.1/tcp/8081/ws/ipfs/QmQrVsqyLcggq1zsdUnLdioHR9NuwCyx2JXLvznxdT87Ff'
+                '/ip4/127.0.0.1/tcp/8081/ws/ipfs/QmbHvcfBR8AtGHZz2q9rnd6RmpJ75RHGTKkpy5ENN9rh8a'
                 // // This information is in align with the daemon. Connecting through websocket by the hash. Config could be found and set at "~/.ipfs/config"
                 // , (err: any, res: any) => {
                 //     if (err) {

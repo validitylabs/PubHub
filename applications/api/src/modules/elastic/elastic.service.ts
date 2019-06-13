@@ -126,9 +126,10 @@ export class SearchService {
             }
         };
         try {
-            this.elasticsearchService.search({index: 'pubhub', body, q}).subscribe((value) => {
-                console.log(value);
-            });
+            // return this.elasticsearchService.search({index: 'pubhub', body, q}).subscribe((value) => {
+            //     console.log(value);
+            // });
+            return this.elasticsearchService.search({index: 'pubhub', body, q});
         } catch (error) {
             this.logger.error('Failed to find document', error);
             throw new HttpException('Failed to find document.', 500);
