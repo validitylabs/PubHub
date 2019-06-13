@@ -15,7 +15,7 @@ export class IpfsService {
     // And put the gateway's IP address inside the host info for the API...
     // This IP address (172.20.0.1) won't be changed untill the command >> docker-compose down runs and restarts the docker-compose again
     // e.g. private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
-    private readonly node = IpfsClient({host: '172.20.0.1', port: '5001', protocol: 'http'});
+    private readonly node = IpfsClient({host: 'ipfs', port: '5001', protocol: 'http'});
     // constructor(private readonly searchService: SearchService) {
     constructor() {
         this.logger.log(` ipfs module is logging`);
@@ -26,6 +26,11 @@ export class IpfsService {
                 this.logger.log(` [ipfs module] the id is ${id.id}.`);
             })
             .catch(() => '[ipfs module] obligatory catch');
+    }
+
+    async getIpfsId(): Promise<string> {
+        const id = await this.node.id();
+        return id.id;
     }
 
     async getIpfsVersion(): Promise<string> {
@@ -67,17 +72,17 @@ export class IpfsService {
         await this.node.pin.add(id);
         return original.toString('utf8');
         // if (Buffer.isBuffer(original)) {
-            //     // Registered as buffer type
-            //     // tslint:disable-next-line: no-unnecessary-else
-            // } else {
-                //     return original;
-                // }
-            }
-            
-        /**
-         * @dev get and pin content from IPFS
-         */
-        async getndPinFromIpfs(id: string): Promise<string> {
+        //     // Registered as buffer type
+        //     // tslint:disable-next-line: no-unnecessary-else
+        // } else {
+        //     return original;
+        // }
+    }
+
+    /**
+     * @dev get and pin content from IPFS
+     */
+    async getAndPinFromIpfs(id: string): Promise<string> {
         this.logger.log(` getting the file`);
         const original = await this.node.get(id);
         // need to add pin

@@ -29,6 +29,11 @@ export class IpfsController {
         return this.ipfsService.getIpfsVersion();
     }
 
+    @Get('id')
+    async getIpfsId(): Promise<string> {
+        return this.ipfsService.getIpfsId();
+    }
+
     @Get('ls')
     async lsPinsIpfs(): Promise<string> {
         return this.ipfsService.lsPinsIpfs();
@@ -37,10 +42,5 @@ export class IpfsController {
     @Get('cat/:id')
     async catAndPinFromIpfs(@Param('id') id: string): Promise<string> {
         return this.ipfsService.catAndPinFromIpfs(id);
-    }
-
-    @Get('get/:id')
-    async getndPinFromIpfs(@Param('id') id: string): Promise<string> {
-        return this.ipfsService.getFromIpfs(id);
     }
 }
