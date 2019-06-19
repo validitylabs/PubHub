@@ -43,4 +43,9 @@ export class IpfsController {
     async catAndPinFromIpfs(@Param('id') id: string): Promise<string> {
         return this.ipfsService.catAndPinFromIpfs(id);
     }
+
+    @Get('get/:id')
+    async getAndPinFromIpfs(@Param('id') id: string): Promise<string> {
+        return this.ipfsService.getAndPinFromIpfs(id);
+    }
 }

@@ -1,10 +1,9 @@
 import React from 'react';
-import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {RootState} from '../../../store';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {SimpleTable} from '../../../components/SimpleTable';
-import {IWork} from '../../../store/work/work.types';
+import {IWork, IReturnedWork} from '../../../store/work/work.types';
 
 const styles = () =>
     createStyles({
@@ -21,6 +20,7 @@ export interface IDisplayTableProps {
         container: string;
     };
     displayTable: IWork[];
+    searchResult: IReturnedWork[];
 }
 
 // let id = 0;
@@ -36,9 +36,10 @@ export interface IDisplayTableProps {
 // ];
 
 class SampleDisplayTableComponent extends React.Component<IDisplayTableProps> {
-    render () {
-        const {classes, displayTable} = this.props;
-        console.log(displayTable);
+    render() {
+        const {classes, displayTable, searchResult} = this.props;
+        console.log('displayTable', displayTable);
+        console.log('searchResult', searchResult);
         return (
             <React.Fragment>
                 <Grid container className={classes.container}>
@@ -47,22 +48,20 @@ class SampleDisplayTableComponent extends React.Component<IDisplayTableProps> {
             </React.Fragment>
         );
     }
-};
+}
 
 const styledSampleDisplayTableComponent = withStyles(styles)(SampleDisplayTableComponent);
 
-const mapStateToProps = ({displayTable}: RootState) => ({
-    displayTable
+const mapStateToProps = ({displayTable, searchResult}: RootState) => ({
+    displayTable,
+    searchResult
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    // updateTable: (works: IDisplayedWork[]) => dispatch(updateDisplayedWorksAction(works)),
-});
+const mapDispatchToProps = () => ({});
 
 const DisplayTable = connect(
     mapStateToProps,
     mapDispatchToProps
 )(styledSampleDisplayTableComponent);
-
 
 export {DisplayTable};

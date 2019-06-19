@@ -1,7 +1,6 @@
 import React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {RootState} from '../../../store';
 import InputBase from '@material-ui/core/InputBase';
 import {fade} from '@material-ui/core/styles/colorManipulator';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
@@ -10,9 +9,8 @@ import SearchIcon from '@material-ui/icons/Search';
 // import {client} from '../../../elastic';
 import {axios} from '../../../axios';
 import config from '../../../config';
-import {updateDisplayedWorks as updateDisplayedWorksAction} from '../../../store/work/work.actions';
+import {updateDisplayedWorks as updateDisplayedWorksAction, getReturnedWorks as getReturnedWorksAction} from '../../../store/work/work.actions';
 import {IReturnedWork} from '../../../store/work/work.types';
-
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -67,12 +65,13 @@ export interface ISearchFieldProps {
         inputRoot: string;
         inputInput: string;
     };
-    updateTable(works: IReturnedWork[]): void
+    updateTable(works: IReturnedWork[]): void;
+    updateResult(works: IReturnedWork[]): void;
 }
 
 class SearchFieldComponent extends React.Component<ISearchFieldProps> {
     handleRequestSearch = async (e: any) => {
-        const {updateTable} = this.props;
+        const {updateTable, updateResult} = this.props;
 
         if (e.charCode === 13 || e.key === 'Enter') {
             // write your functionality here
@@ -88,6 +87,9 @@ class SearchFieldComponent extends React.Component<ISearchFieldProps> {
                     return item._source;
                 });
                 console.log('>>> results!', results);
+                // update the result saved in the browser
+                updateResult(results);
+                // update the displayed table
                 updateTable(results);
             } catch (error) {
                 console.log('>>> submit failed!', error);
@@ -121,18 +123,18 @@ class SearchFieldComponent extends React.Component<ISearchFieldProps> {
 
 const styledSearchFieldComponent = withStyles(styles)(SearchFieldComponent);
 
-const mapStateToProps = ({displayTable}: RootState) => ({
+const mapStateToProps = () => ({
     // displayTable
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateTable: (works: IReturnedWork[]) => dispatch(updateDisplayedWorksAction(works)),
+    updateResult: (works: IReturnedWork[]) => dispatch(getReturnedWorksAction(works))
 });
 
 const SearchField = connect(
     mapStateToProps,
     mapDispatchToProps
 )(styledSearchFieldComponent);
-
 
 export {SearchField};

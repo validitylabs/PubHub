@@ -1,4 +1,6 @@
 import React, {FunctionComponent} from 'react';
+import {connect} from 'react-redux';
+import {RootState} from '../../store';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
 import {withStyles, createStyles} from '@material-ui/core';
 import Table from '@material-ui/core/Table';
@@ -7,7 +9,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {IWork} from '../../store/work/work.types';
+import {IWork, IReturnedWork} from '../../store/work/work.types';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -27,10 +29,11 @@ export interface ISimpleTableProps {
         table: string;
     };
     rows: IWork[];
+    searchResult: IReturnedWork[];
 }
 
 const SimpleTableComponent: FunctionComponent<ISimpleTableProps> = (props) => {
-    const {classes, rows} = props;
+    const {classes, rows, searchResult} = props;
 
     return (
         <Paper className={classes.root}>
@@ -43,8 +46,8 @@ const SimpleTableComponent: FunctionComponent<ISimpleTableProps> = (props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.id}>
+                    {rows.map((row, index) => (
+                        <TableRow key={row.id} onClick={() => console.log(`[In a table, clicking on the row]${JSON.stringify(searchResult[index])}`)}>
                             <TableCell component="th" scope="row">
                                 {row.title}
                             </TableCell>
@@ -59,4 +62,15 @@ const SimpleTableComponent: FunctionComponent<ISimpleTableProps> = (props) => {
 };
 const styledSimpleTableComponent = withStyles(styles)(SimpleTableComponent);
 
-export {styledSimpleTableComponent as SimpleTable};
+const mapStateToProps = ({searchResult}: RootState) => ({
+    searchResult
+});
+
+const mapDispatchToProps = () => ({});
+
+const SimpleTable = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(styledSimpleTableComponent);
+
+export {SimpleTable};

@@ -7,10 +7,10 @@ import {IReturnedWork, SearchActionTypes} from './work.types';
 //         works
 //     });
 
-// export const getReturnedWorks = (works: IReturnedWork[]) =>
-//     action(SearchActionTypes.SEARCH, {
-//         works
-//     });
+export const getReturnedWorks = (works: IReturnedWork[]) =>
+    action(SearchActionTypes.SEARCH, {
+        works
+    });
 
 export const updateDisplayedWorks = (works: IReturnedWork[]) =>
     action(SearchActionTypes.DISPLAY, {

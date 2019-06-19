@@ -63,20 +63,18 @@ export class IpfsService {
      * @dev display and pin content from IPFS
      */
     async catAndPinFromIpfs(id: string): Promise<string> {
-        // this.logger.log(` cat the file`);
-        // const original = await this.node.cat(id);
         this.logger.log(` catting the file`);
         const original = await this.node.get(id);
         // need to add pin
         this.logger.log(` pinning the file to current server`);
         await this.node.pin.add(id);
-        return original.toString('utf8');
-        // if (Buffer.isBuffer(original)) {
-        //     // Registered as buffer type
-        //     // tslint:disable-next-line: no-unnecessary-else
-        // } else {
-        //     return original;
-        // }
+        // An additional step here is the check if the returned value is Buffer or not.
+        // For the current PoC, we don't need to do this step.
+        // if (Buffer.isBuffer(original))
+        // // the returned value of `get` command is an array
+        return original[0].content.toString('utf8');
+        // We used to use the following ??
+        // return original.toString('utf8');
     }
 
     /**
@@ -88,7 +86,8 @@ export class IpfsService {
         // need to add pin
         this.logger.log(` pinning the file to current server`);
         await this.node.pin.add(id);
-        return Buffer.from(original[0].content).toString('utf8');
+        // return Buffer.from(original[0].content).toString('utf8');
+        return original[0].content.toString('utf8');
     }
 
     async lsPinsIpfs(): Promise<string> {

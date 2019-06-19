@@ -31,7 +31,7 @@ export class SearchService {
 
     async getContentFromIpfs(work: SaveWorkDto) {
         this.logger.log(` Step 3: IPFS`);
-        const result = await this.ipfsService.catAndPinFromIpfs(work.digest);
+        const result = await this.ipfsService.getAndPinFromIpfs(work.digest);
         console.log('Result got from ipfs is', result);
         // check if user account and ipfs digest matches
         this.logger.log(` Step 4: Verify data with web3`);

@@ -9,7 +9,7 @@ import {Web3Module} from '../web3/web3.module';
 export class ElasticsearchConfigService implements ElasticsearchOptionsFactory {
     createElasticsearchOptions(): ElasticsearchModuleOptions {
         return {
-            host: '172.20.0.1:9200',
+            host: 'elasticsearch:9200',
             log: 'trace'
         };
     }
