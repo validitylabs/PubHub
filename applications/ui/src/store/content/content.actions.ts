@@ -18,6 +18,8 @@ export const saveContentEditor = (content: IContent) =>
         content
     });
 
+export const searchContentEditor = () => action(ContentActionTypes.SEARCH_CONTENT);
+
 export const showAlert = () => action(AlertActionTypes.SHOW_ALERT);
 
 export const hideAlert = () => action(AlertActionTypes.HIDE_ALERT);

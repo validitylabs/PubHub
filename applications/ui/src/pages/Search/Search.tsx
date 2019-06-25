@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import {DatePicker} from '../../components/DatePicker';
 import {SearchField} from './SearchField';
 import {DisplayTable} from './DisplayTable';
+import {TextEditor} from '../../components/TextEditor';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -80,6 +81,9 @@ const SearchComponent: FunctionComponent<ISearchProps> = (props) => {
                 </Grid>
                 <Grid item>
                     <DisplayTable />
+                </Grid>
+                <Grid item>
+                    <TextEditor />
                 </Grid>
             </Grid>
         </React.Fragment>

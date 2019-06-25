@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {RootState} from '../../../store';
 import {withStyles, createStyles, Grid} from '@material-ui/core';
 import {SimpleTable} from '../../../components/SimpleTable';
-import {IWork, IReturnedWork} from '../../../store/work/work.types';
+import {IWork} from '../../../store/work/work.types';
 
 const styles = () =>
     createStyles({
@@ -20,7 +20,6 @@ export interface IDisplayTableProps {
         container: string;
     };
     displayTable: IWork[];
-    searchResult: IReturnedWork[];
 }
 
 // let id = 0;
@@ -37,9 +36,7 @@ export interface IDisplayTableProps {
 
 class SampleDisplayTableComponent extends React.Component<IDisplayTableProps> {
     render() {
-        const {classes, displayTable, searchResult} = this.props;
-        console.log('displayTable', displayTable);
-        console.log('searchResult', searchResult);
+        const {classes, displayTable} = this.props;
         return (
             <React.Fragment>
                 <Grid container className={classes.container}>
@@ -52,9 +49,8 @@ class SampleDisplayTableComponent extends React.Component<IDisplayTableProps> {
 
 const styledSampleDisplayTableComponent = withStyles(styles)(SampleDisplayTableComponent);
 
-const mapStateToProps = ({displayTable, searchResult}: RootState) => ({
+const mapStateToProps = ({displayTable}: RootState) => ({
     displayTable,
-    searchResult
 });
 
 const mapDispatchToProps = () => ({});

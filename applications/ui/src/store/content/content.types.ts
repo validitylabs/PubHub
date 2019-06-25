@@ -18,7 +18,8 @@ export enum ContentActionTypes {
     READ_CONTENT = 'READ_CONTENT',
     WRITE_CONTENT = 'WRITE_CONTENT',
     CANCEL_CONTENT = 'CANCEL_CONTENT',
-    SAVE_CONTENT = 'SAVE_CONTENT'
+    SAVE_CONTENT = 'SAVE_CONTENT',
+    SEARCH_CONTENT = 'SEARCH_CONTENT'
 }
 
 export enum AlertActionTypes {
@@ -34,6 +35,7 @@ export enum AlertActionTypes {
 export interface IContentEditor {
     display: boolean;
     modifiable: boolean;
+    showInitial: boolean;
     alertOn: boolean;
     content: IContent;
 }

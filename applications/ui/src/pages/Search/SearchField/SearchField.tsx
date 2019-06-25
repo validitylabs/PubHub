@@ -86,7 +86,6 @@ class SearchFieldComponent extends React.Component<ISearchFieldProps> {
                 const results = response.data[0].hits.hits.map((item: any) => {
                     return item._source;
                 });
-                console.log('>>> results!', results);
                 // update the result saved in the browser
                 updateResult(results);
                 // update the displayed table

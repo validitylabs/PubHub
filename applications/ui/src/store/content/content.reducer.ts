@@ -12,6 +12,8 @@ export const initialContentState: IContent = {
 
 const id = (state: string = initialContentState.id, action: AnyAction): string => {
     switch (action.type) {
+        case ContentActionTypes.READ_CONTENT:
+            return String(action.payload.content.id);
         case ContentActionTypes.SAVE_CONTENT:
             return String(parseInt(state, 10) + 1);
         default:
@@ -21,6 +23,8 @@ const id = (state: string = initialContentState.id, action: AnyAction): string =
 
 const createdAt = (state: Date = initialContentState.createdAt, action: AnyAction): Date => {
     switch (action.type) {
+        case ContentActionTypes.READ_CONTENT:
+            return action.payload.content.createdAt;
         default:
             return state;
     }
@@ -28,6 +32,8 @@ const createdAt = (state: Date = initialContentState.createdAt, action: AnyActio
 
 const updatedAt = (state: Date = initialContentState.createdAt, action: AnyAction): Date => {
     switch (action.type) {
+        case ContentActionTypes.READ_CONTENT:
+            return action.payload.content.updatedAt;
         case ContentActionTypes.SAVE_CONTENT:
             return new Date();
         default:
@@ -37,6 +43,8 @@ const updatedAt = (state: Date = initialContentState.createdAt, action: AnyActio
 
 const userId = (state: string = initialContentState.userId, action: AnyAction): string => {
     switch (action.type) {
+        case ContentActionTypes.READ_CONTENT:
+            return action.payload.content.userId;
         default:
             return state;
     }
@@ -44,6 +52,8 @@ const userId = (state: string = initialContentState.userId, action: AnyAction): 
 
 const title = (state = '', action: AnyAction): string => {
     switch (action.type) {
+        case ContentActionTypes.READ_CONTENT:
+            return action.payload.content.title;
         case ContentActionTypes.SAVE_CONTENT:
             return action.payload.content.title;
         default:
@@ -53,6 +63,8 @@ const title = (state = '', action: AnyAction): string => {
 
 const text = (state = '', action: AnyAction): string => {
     switch (action.type) {
+        case ContentActionTypes.READ_CONTENT:
+            return action.payload.content.text;
         case ContentActionTypes.SAVE_CONTENT:
             return action.payload.content.text;
         default:
@@ -72,6 +84,7 @@ export const contentReducer: Reducer<IContent> = (state = initialContentState, a
 const initialState: IContentEditor = {
     display: false,
     modifiable: false,
+    showInitial: true,
     alertOn: false,
     content: initialContentState
 };
@@ -86,6 +99,15 @@ const display = (state = false, action: AnyAction) => {
             return false;
         // case ContentActionTypes.SAVE_CONTENT:
         //     return false;
+        default:
+            return state;
+    }
+};
+
+const showInitial = (state = true, action: AnyAction) => {
+    switch (action.type) {
+        case ContentActionTypes.SEARCH_CONTENT:
+            return false;
         default:
             return state;
     }
@@ -127,6 +149,7 @@ const alertOn = (state = false, action: AnyAction) => {
 export const contentEditorReducer: Reducer<IContentEditor> = (state = initialState, action: AnyAction) => ({
     display: display(state.display, action),
     modifiable: modifiable(state.modifiable, action),
+    showInitial: showInitial(state.showInitial, action),
     alertOn: alertOn(state.alertOn, action),
     content: content(state.content, action)
 });

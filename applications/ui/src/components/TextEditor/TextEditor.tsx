@@ -27,7 +27,7 @@ import {IContent} from '../../store/content/content.types';
 import {IElasticreg} from '../../store/elasticreg/elasticreg.types';
 import {initialContentState as defaultContentState} from '../../store/content/content.reducer';
 import {
-    // readContentEditor as readContentEditorAction,
+    readContentEditor as readContentEditorAction,
     cancelContentEditor as cancelContentEditorAction,
     saveContentEditor as saveContentEditorAction,
     writeContentEditor as writeContentEditorAction, // fallback of a failed tx
@@ -62,12 +62,14 @@ interface IContentDisplayProps {
     open: boolean;
     alertOn: boolean;
     modifiable: boolean;
+    showInitial: boolean;
     lastUpdateTime: Date;
     content: IContent;
     displayEditor(): void;
     closeEditor(): void;
     saveEditor(newContentState: IContent): void;
     resumeEditor(newContentState: IContent): void;
+    showContent(newContentState: IContent): void;
     displayAlert(): void;
     closeAlert(): void;
 }
@@ -169,8 +171,14 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
         closeEditor();
     };
 
+    handleReadOnlyOpen = (resultContentState: IContent) => {
+        const {showContent} = this.props;
+        console.log('added another functionality', store.getState());
+        showContent(resultContentState);
+    };
+
     renderForm = (props: FormikProps<IContent>) => {
-        const {classes, modifiable} = this.props;
+        const {classes, modifiable, showInitial} = this.props;
         return (
             <Form autoComplete="off">
                 <AppBar className={classes.appBar}>
@@ -185,7 +193,7 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
                             {props.isSubmitting ? 'savinging...' : 'Save'}
                         </Button> */}
                         <Button type="submit" color="inherit" disabled={!modifiable}>
-                            {modifiable ? 'Save' : 'Savinging...'}
+                            {showInitial ? (modifiable ? 'Save' : 'Savinging...') : 'Read only'}
                         </Button>
                     </Toolbar>
                 </AppBar>
@@ -225,13 +233,13 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
     };
 
     render() {
-        const {open, alertOn, closeAlert} = this.props;
+        const {open, alertOn, closeAlert, showInitial, content} = this.props;
         return (
             <React.Fragment>
                 <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
                     <Formik
                         enableReinitialize
-                        initialValues={defaultContentState}
+                        initialValues={showInitial ? defaultContentState : content}
                         validationSchema={this.validationSchema}
                         onSubmit={this.onSubmit}
                         render={this.renderForm}
@@ -252,19 +260,15 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
                             take up to 10 minutes.
                         </DialogContentText>
                         <Divider />
+                        <DialogContentText id="alert-dialog-description">Step 1: Save content to IPFS (~instantly).</DialogContentText>
                         <DialogContentText id="alert-dialog-description">
-                            Step 1: Save content to IPFS (~instantly).
+                            Step 2: Write the digest to Ethereum network (Seconds to ~1 minute).
                         </DialogContentText>
                         <DialogContentText id="alert-dialog-description">
-                            Step 2: Write the digest to Ethereum network (Seconds to ~1 minute). 
+                            Step 3: Perform sanity check by pinning the content from IPFS network and compare the metadata with the data registered in the smart
+                            contract (3~5 minutes).
                         </DialogContentText>
-                        <DialogContentText id="alert-dialog-description">
-                            Step 3: Perform sanity check by pinning the content from IPFS network and compare the metadata with the data registered in
-                            the smart contract (3~5 minutes). 
-                        </DialogContentText>
-                        <DialogContentText id="alert-dialog-description">
-                            Step 4: Save the data to a centralized indexing service.
-                        </DialogContentText>
+                        <DialogContentText id="alert-dialog-description">Step 4: Save the data to a centralized indexing service.</DialogContentText>
                     </DialogContent>
                 </Dialog>
             </React.Fragment>
@@ -278,6 +282,7 @@ const mapStateToProps = ({contentEditor, content}: RootState) => ({
     open: contentEditor.display,
     alertOn: contentEditor.alertOn,
     modifiable: contentEditor.modifiable,
+    showInitial: contentEditor.showInitial,
     lastUpdateTime: contentEditor.content.updatedAt,
     initialContent: contentEditor.content,
     content
@@ -288,6 +293,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     closeEditor: () => dispatch(cancelContentEditorAction()),
     saveEditor: (newContentState: IContent) => dispatch(saveContentEditorAction(newContentState)),
     resumeEditor: (newContentState: IContent) => dispatch(writeContentEditorAction(newContentState)),
+    showContent: (newContentState: IContent) => dispatch(readContentEditorAction(newContentState)),
     displayAlert: () => dispatch(showAlertAction()),
     closeAlert: () => dispatch(hideAlertAction())
 });
