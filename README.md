@@ -66,3 +66,23 @@ To make sure that the api container works, listen to the logs.
 ```
 docker-compose logs -f api
 ```
+
+## Deployment
+
+When deploying the `ipfs` container, please make sure that: 
+1. The CORS config has been properly set up.
+    ```json
+    "API": {
+            "HTTPHeaders": {
+                "Access-Control-Allow-Methods": [
+                    "PUT",
+                    "GET",
+                    "POST"
+                ],
+                "Access-Control-Allow-Origin": [
+                    "*"
+                ]
+            }
+        }
+    ```
+2. Add `"/ip4/0.0.0.0/tcp/8081/ws”` inside `Addresses.Swarm`
