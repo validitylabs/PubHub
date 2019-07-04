@@ -79,7 +79,8 @@ export const getCurrentAddress = async (): Promise<string> => {
 export const isInstalled = async () => {
     // tslint:disable-next-line: no-typeof-undefined
     if (typeof window.ethereum !== 'undefined') {
-        web3 = new Web3(window.ethereum);
+        const options = {transactionConfirmationBlocks: 1};
+        web3 = new Web3(window.ethereum, undefined, options);
         try {
             // Request account access if needed
             await window.ethereum.enable();

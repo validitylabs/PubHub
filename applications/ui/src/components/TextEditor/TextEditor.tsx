@@ -2,7 +2,7 @@ import React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {store, RootState} from '../../store';
-import {Formik, Form, Field, FormikProps, FormikValues} from 'formik';
+import {Formik, Form, Field, FormikValues} from 'formik'; //FormikProps
 import * as Yup from 'yup';
 import {axios} from '../../axios';
 import config from '../../config';
@@ -177,7 +177,8 @@ class TextEditorComponent extends React.Component<ITextEditorComponentProps> {
         showContent(resultContentState);
     };
 
-    renderForm = (props: FormikProps<IContent>) => {
+    renderForm = () => {
+        //props: FormikProps<IContent>
         const {classes, modifiable, showInitial} = this.props;
         return (
             <Form autoComplete="off">
