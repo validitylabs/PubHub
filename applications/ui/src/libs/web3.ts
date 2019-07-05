@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import config from '../config';
 
 declare let window: any;
 
@@ -105,7 +106,7 @@ export const isInstalled = async () => {
         // maybe no window object is exposed??
         try {
             // Request account access if needed
-            web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://localhost:8546'));
+            web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(config.APP_WEB3_PROVIDER_ENDPOINT));
             await getCurrentAddress();
             initializeContract();
             console.log(` [ web3 other injected ] On ${String(await web3.eth.net.getNetworkType())} network with ${String(await web3.eth.getAccounts())}`);

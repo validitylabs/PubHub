@@ -7,8 +7,8 @@ const options = {
     repo: 'ipfs-' + String(Math.random() + Date.now()),
     config: {
         Addresses: {
-            API: '/ip4/127.0.0.1/tcp/5001',
-            Gateway: '/ip4/127.0.0.1/tcp/8080'
+            API: config.APP_IPFS_API_ADDR,
+            Gateway: config.APP_IPFS_GATEWAY_ADDR
         },
         API: {
             HTTPHeaders: {
@@ -47,58 +47,55 @@ export const addToIpfs = async (_title: String, _text: String) => {
     return filesAdded[1].hash;
 };
 
-export const initializeIpfs = () => {
+export const initializeIpfs = async () => {
     // getRemoteID
     try {
-        // tslint:disable-next-line: no-floating-promises
-        axios
-            .get(`${config.APP_API_ENDPOINT}/ipfs/id`, {
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                    // Authorization: `Bearer ${authState.token}`
+        const response = await axios.get(`${config.APP_API_ENDPOINT}/ipfs/id`, {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+                // Authorization: `Bearer ${authState.token}`
+            }
+        });
+
+        console.log(' [ initialize ipfs ] remote ipfs ID', response.data);
+        console.log(' [ initialize ipfs ] Online status: ', node.isOnline() ? 'online' : 'offline');
+        node.once('ready', () => {
+            console.log(' [ initialize ipfs ] IPFS node is ready');
+            node.id((err: any, res: any) => {
+                if (err) {
+                    console.error(' [initialize ipfs] id query failed', err);
+                    throw err;
                 }
-            })
-            .then((response) => {
-                console.log(' [ initialize ipfs ] remote ipfs ID', response.data);
                 console.log(' [ initialize ipfs ] Online status: ', node.isOnline() ? 'online' : 'offline');
-                node.once('ready', () => {
-                    console.log(' [ initialize ipfs ] IPFS node is ready');
-                    node.id((err: any, res: any) => {
-                        if (err) {
-                            console.error(' [initialize ipfs] id query failed', err);
-                            throw err;
-                        }
-                        console.log(' [ initialize ipfs ] Online status: ', node.isOnline() ? 'online' : 'offline');
-                        console.log(' [ initialize ipfs ]  The node identity is: ', res.id);
-                    });
-                    try {
-                        node.swarm.connect(
-                            // // trying to connect to an ipfs daemon running on localhost
-                            // '/ip4/127.0.0.1/tcp/4003/ws/ipfs/QmVJQDXoLqfBpBwBVmi96zbuD3eQazQf274EEwLB6BNWaZ'
-                            // trying to connect to the websocket of backend ipfs daemon
-                            // '/ip4/172.20.0.3/tcp/8081/wss/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
-                            // or 127.0.0.1
-                            `/ip4/127.0.0.1/tcp/8081/ws/ipfs/${response.data}`
-                            // // This information is in align with the daemon. Connecting through websocket by the hash. Config could be found and set at "~/.ipfs/config"
-                            // , (err: any, res: any) => {
-                            //     if (err) {
-                            //         console.error(' [initialize ipfs ] Websocket connection tempt failed', err);
-                            //         throw err;
-                            //     }
-                            //     // if no err is present, connection is now open
-                            //     console.log(' [ initialize ipfs ] Websocket connection is added', res);
-                            // }
-                        );
-                    } catch (e) {
-                        console.error(' [ initialize ipfs try] ', e);
-                        throw e;
-                    }
-                });
-                node.once('error', (error: any) => {
-                    console.error('Something went terribly wrong!', error);
-                });
-                node.once('start', () => console.log('Node started!'));
+                console.log(' [ initialize ipfs ]  The node identity is: ', res.id);
             });
+            try {
+                node.swarm.connect(
+                    // // trying to connect to an ipfs daemon running on localhost
+                    // '/ip4/127.0.0.1/tcp/4003/ws/ipfs/QmVJQDXoLqfBpBwBVmi96zbuD3eQazQf274EEwLB6BNWaZ'
+                    // trying to connect to the websocket of backend ipfs daemon
+                    // '/ip4/172.20.0.3/tcp/8081/wss/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
+                    // or 127.0.0.1
+                    `${config.APP_IPFS_SWARM_ADDR}/ws/ipfs/${response.data}`
+                    // // This information is in align with the daemon. Connecting through websocket by the hash. Config could be found and set at "~/.ipfs/config"
+                    // , (err: any, res: any) => {
+                    //     if (err) {
+                    //         console.error(' [initialize ipfs ] Websocket connection tempt failed', err);
+                    //         throw err;
+                    //     }
+                    //     // if no err is present, connection is now open
+                    //     console.log(' [ initialize ipfs ] Websocket connection is added', res);
+                    // }
+                );
+            } catch (e) {
+                console.error(' [ initialize ipfs try] ', e);
+                throw e;
+            }
+        });
+        node.once('error', (error: any) => {
+            console.error('Something went terribly wrong!', error);
+        });
+        node.once('start', () => console.log('Node started!'));
         // const results = response.data[0].hits.hits.map((item: any) => {
         //     return item._source;
     } catch (error) {
