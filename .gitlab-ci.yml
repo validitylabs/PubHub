@@ -5,7 +5,7 @@ services:
 
 stages:
   - build-test
-  - test
+  # - test
   - build
   - release
   - deploy
@@ -41,17 +41,17 @@ build-api-test-image:
 
 ##
 # Run tests
-test-ui:
-  stage: test
-  script:
-    - docker pull $UI_CONTAINER_TEST_IMAGE
-    - docker run $UI_CONTAINER_TEST_IMAGE
+# test-ui:
+#   stage: test
+#   script:
+#     - docker pull $UI_CONTAINER_TEST_IMAGE
+#     - docker run $UI_CONTAINER_TEST_IMAGE
 
-test-api:
-  stage: test
-  script:
-    - docker pull $API_CONTAINER_TEST_IMAGE
-    - docker run $API_CONTAINER_TEST_IMAGE
+# test-api:
+#   stage: test
+#   script:
+#     - docker pull $API_CONTAINER_TEST_IMAGE
+#     - docker run $API_CONTAINER_TEST_IMAGE
 
 ##
 # Build release images
