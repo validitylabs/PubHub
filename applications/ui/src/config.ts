@@ -11,28 +11,19 @@ const configSchema = yup.object().shape({
     APP_API_ENDPOINT: yup
         .string()
         // eslint-disable-next-line
-        .matches(/^https:\/\/.*[^/]$/, '${path} must be a valid endpoint of the following schema without a trailing slash (https://www.company.com)')
+        .matches(/^https?:\/\/.*[^/]$/, '${path} must be a valid endpoint of the following schema without a trailing slash (https://www.company.com)')
         .required(),
     APP_WEB3_PROVIDER_ENDPOINT: yup
         .string()
         // eslint-disable-next-line
-        .matches(/^ws:\/\/.*[^/]$/, '${path} must be a valid endpoint of the following schema without a trailing slash (wss://www.company.com)')
+        .matches(
+            /^(https?|wss?):\/\/.*[^/]$/,
+            '${path} must be a valid web3 provider endpoint (https or wss) of the following schema without a trailing slash (wss://www.company.com)'
+        )
         .required(),
-    APP_IPFS_SWARM_ADDR: yup
-        .string()
-        // eslint-disable-next-line
-        .matches(/^\/\w*\/[a-z0-9.-]*\/\w*\/\w*[^/]$/, '${path} must be a valid multiaddr (https://github.com/multiformats/js-multiaddr)')
-        .required(),
-    APP_IPFS_API_ADDR: yup
-        .string()
-        // eslint-disable-next-line
-        .matches(/^\/\w*\/[a-z0-9.-]*\/\w*\/\w*[^/]$/, '${path} must be a valid multiaddr (https://github.com/multiformats/js-multiaddr)')
-        .required(),
-    APP_IPFS_GATEWAY_ADDR: yup
-        .string()
-        // eslint-disable-next-line
-        .matches(/^\/\w*\/[a-z0-9.-]*\/\w*\/\w*[^/]$/, '${path} must be a valid multiaddr (https://github.com/multiformats/js-multiaddr)')
-        .required()
+    APP_IPFS_SWARM_ADDR: yup.string().required(),
+    APP_IPFS_API_ADDR: yup.string().required(),
+    APP_IPFS_GATEWAY_ADDR: yup.string().required()
 });
 
 const getConfig = (): IConfigurations => {
