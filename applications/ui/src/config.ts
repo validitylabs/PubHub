@@ -15,9 +15,9 @@ const configSchema = yup.object().shape({
         .required(),
     APP_WEB3_PROVIDER_ENDPOINT: yup
         .string()
-        // eslint-disable-next-line
         .matches(
             /^(https?|wss?):\/\/.*[^/]$/,
+            // eslint-disable-next-line
             '${path} must be a valid web3 provider endpoint (https or wss) of the following schema without a trailing slash (wss://www.company.com)'
         )
         .required(),
