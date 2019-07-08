@@ -87,7 +87,7 @@ ENV CI=true
 
 WORKDIR /srv
 
-RUN cd ./$APPLICATION_PATH; yarn run build
+RUN cd ./$APPLICATION_PATH; GENERATE_SOURCEMAP=false yarn run build
 
 
 ##
