@@ -76,7 +76,7 @@ export const initializeIpfs = async () => {
                     // trying to connect to the websocket of backend ipfs daemon
                     // '/ip4/172.20.0.3/tcp/8081/wss/ipfs/QmXj2T16CdqruPPQ7WSseHDyXyeex29i6LmqDiVacMhkkW'
                     // or 127.0.0.1
-                    `${config.APP_IPFS_SWARM_ADDR}/ws/ipfs/${response.data}`
+                    `${config.APP_IPFS_SWARM_ADDR}/${response.data}`
                     // // This information is in align with the daemon. Connecting through websocket by the hash. Config could be found and set at "~/.ipfs/config"
                     // , (err: any, res: any) => {
                     //     if (err) {

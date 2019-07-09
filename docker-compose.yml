@@ -113,7 +113,7 @@ services:
       PORT: 3001
       APP_API_ENDPOINT: https://localhost:3000
       APP_WEB3_PROVIDER_ENDPOINT: ws://localhost:8546
-      APP_IPFS_SWARM_ADDR: /ip4/ipfs-proxy/tcp/8443
+      APP_IPFS_SWARM_ADDR: /ip4/127.0.0.1/tcp/8443/wss/ipfs
       APP_IPFS_API_ADDR: /ip4/127.0.0.1/tcp/5001
       APP_IPFS_GATEWAY_ADDR: /ip4/127.0.0.1/tcp/8080
     volumes:
