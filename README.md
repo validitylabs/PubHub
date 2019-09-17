@@ -10,7 +10,11 @@ When deploying to the public, please create another repository and push the late
 
 This project is created based on Validity Labs's Whitelabel Web App.
 
-## Development setup
+## Architecture
+![](https://imgur.com/nz7a1UE.png)
+<p align="center"><i><b>Figure 1</b> Architecture of PubHub</i></p>
+
+## Setup
 
 In order to setup your development environment, follow the following steps:
 
